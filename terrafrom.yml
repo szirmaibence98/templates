@@ -1,0 +1,15 @@
+
+jobs:
+
+  terraform_plan:
+    name: 'Terraform Plan'
+    runs-on: ubuntu-latest
+    env:
+      TF_ENV: dev # Dynamically set based on branch in a real scenario
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Print ENV
+        run: env
