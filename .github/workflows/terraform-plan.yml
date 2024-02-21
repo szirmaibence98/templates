@@ -8,7 +8,7 @@ on:
     secrets:    
       ARM_CLIENT_ID:
         required: true
-        type: string
+
 
 
         
