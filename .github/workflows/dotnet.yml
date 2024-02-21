@@ -36,3 +36,13 @@ jobs:
     - name: Test
       run: dotnet test --no-build -c Release --verbosity normal
       working-directory: ${{ inputs.working-directory }}
+
+    - name: Publish
+      run: dotnet publish ./src/YourProject.sln -c Release -o ./publish
+
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: published-app
+        path: ./publish
+
