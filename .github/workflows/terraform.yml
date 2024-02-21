@@ -54,7 +54,7 @@ jobs:
           path: ${{ inputs.environment_name }}.tfplan
 
 
-  terrafrom-apply:
+  terraform-apply:
     name: 'Apply'
     needs: terraform-plan
     if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/feature/')
