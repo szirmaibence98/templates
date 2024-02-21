@@ -11,8 +11,8 @@ jobs:
     name: 'Terraform Apply Test'
     runs-on: ubuntu-latest
     
-    environment: 
-      name: ${{ inputs.environment_name }}
+#    environment: 
+#      name: ${{ inputs.environment_name }}
 
       
     steps:
@@ -25,16 +25,16 @@ jobs:
           terraform_version: latest
 
       - name: Terraform Init
-        run: terraform init -backend-config="key=${{ job.environment.name }}.terraform.tfstate"
+        run: terraform init -backend-config="key=${{ inputs.environment_name }}.terraform.tfstate"
 
       - name: Terraform Validate
         run: terraform validate
 
       - name: Terraform Plan
-        run: terraform plan -var-file="${{ job.environment.name }}.tfvars" -out="${{ job.environment.name }}.tfplan"
+        run: terraform plan -var-file="${{ inputs.environment_name }}.tfvars" -out="${{ inputs.environment_name }}.tfplan"
 
       - name: Archive Terraform Plan
         uses: actions/upload-artifact@v4.3.1
         with:
           name: terraform-plan
-          path: ${{ job.environment.name }}.tfplan
+          path: ${{ inputs.environment_name }}.tfplan
