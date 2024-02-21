@@ -10,6 +10,7 @@ jobs:
 
   terraform-plan:
     name: 'Terraform Apply Test'
+    runs-on: ubuntu-latest
     environment: 
       name: test
     steps:
