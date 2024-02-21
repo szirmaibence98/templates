@@ -1,14 +1,18 @@
 name: .NET
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+  workflow_call: # This makes the workflow reusable
+    inputs:
+      dotnet-version:
+        required: true
+        type: string
+      working-directory:
+        required: false
+        default: '.'
+        type: string
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -17,13 +21,16 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: '8.0.x'
+        dotnet-version: ${{ inputs.dotnet-version }}
 
     - name: Restore dependencies
       run: dotnet restore
+      working-directory: ${{ inputs.working-directory }}
 
     - name: Build
       run: dotnet build --no-restore -c Release
+      working-directory: ${{ inputs.working-directory }}
 
     - name: Test
       run: dotnet test --no-build -c Release --verbosity normal
+      working-directory: ${{ inputs.working-directory }}
