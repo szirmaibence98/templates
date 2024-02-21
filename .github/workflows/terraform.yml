@@ -21,7 +21,7 @@ on:
         
 jobs:
   terraform-plan:
-    name: 'Terraform Apply Test'
+    name: 'Terraform Plan'
     runs-on: ubuntu-latest
     env:
       ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
@@ -33,7 +33,7 @@ jobs:
       
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4.1.1
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2.0.3
@@ -54,3 +54,22 @@ jobs:
         with:
           name: terraform-plan
           path: ${{ inputs.environment_name }}.tfplan
+
+
+
+  terrafrom-apply:
+    name: 'Terraform Apply'
+    needs: terraform_plan
+    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/feature/')
+    runs-on: ubuntu-latest
+    environment: 
+      name: ${{ inputs.environment_name }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4.1.1
+
+      - name: Print ENV
+        run: env
+
+      - name: Print Environment Name
+        run: echo "Environment Name is ${{ job.environment.name }}"
