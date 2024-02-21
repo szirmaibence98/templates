@@ -5,7 +5,22 @@ on:
       environment_name:
         required: true
         type: string
-
+      arm_client_id:
+        required: true
+        type: string
+      arm_client_secret:
+        required: true
+        type: string
+      arm_subscription_id:
+        required: true
+        type: string
+      arm_tenant_id:
+        required: true
+        type: string
+      arm_access_key:
+        required: true
+        type: string
+        
 jobs:
   terraform-plan:
     name: 'Terraform Apply Test'
