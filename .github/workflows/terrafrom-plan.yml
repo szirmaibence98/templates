@@ -5,35 +5,19 @@ on:
       environment_name:
         required: true
         type: string
-      arm_client_id:
-        required: true
-        type: string
-      arm_client_secret:
-        required: true
-        type: string
-      arm_subscription_id:
-        required: true
-        type: string
-      arm_tenant_id:
-        required: true
-        type: string
-      arm_access_key:
-        required: true
-        type: string
-        
-env:
-  ARM_CLIENT_ID: ${{ inputs.arm_client_id }}
-  ARM_CLIENT_SECRET: ${{ inputs.arm_client_secret }}
-  ARM_SUBSCRIPTION_ID: ${{ inputs.arm_subscription_id }}
-  ARM_TENANT_ID: ${{ inputs.arm_tenant_id }}
-  ARM_ACCESS_KEY: ${{ inputs.arm_access_key }}
 
 jobs:
   terraform-plan:
     name: 'Terraform Apply Test'
     runs-on: ubuntu-latest
+    
     environment: 
       name: ${{ inputs.environment_name }}
+      ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+      ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+      ARM_ACCESS_KEY: ${{ secrets.ARM_ACCESS_KEY }}
       
     steps:
       - name: Checkout Repository
