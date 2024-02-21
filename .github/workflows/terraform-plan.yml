@@ -6,21 +6,10 @@ on:
         required: true
         type: string
     secrets:    
-      arm_client_id:
+      ARM_CLIENT_ID:
         required: true
         type: string
-      arm_client_secret:
-        required: true
-        type: string
-      arm_subscription_id:
-        required: true
-        type: string
-      arm_tenant_id:
-        required: true
-        type: string
-      arm_access_key:
-        required: true
-        type: string
+
 
         
 jobs:
