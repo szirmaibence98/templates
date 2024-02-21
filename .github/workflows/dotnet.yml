@@ -8,7 +8,7 @@ on:
         type: string
       working-directory:
         required: false
-        default: '.'
+        default: 'src' # Set default working directory to src
         type: string
 
 jobs:
