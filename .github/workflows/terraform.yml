@@ -17,7 +17,6 @@ on:
       ARM_ACCESS_KEY:
         required: true
 
-
         
 jobs:
   terraform-plan:
@@ -29,7 +28,6 @@ jobs:
       ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
       ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
       ARM_ACCESS_KEY: ${{ secrets.ARM_ACCESS_KEY }}    
-
       
     steps:
       - name: Checkout Repository
@@ -56,7 +54,6 @@ jobs:
           path: ${{ inputs.environment_name }}.tfplan
 
 
-
   terrafrom-apply:
     name: 'Apply'
     needs: terraform-plan
@@ -64,12 +61,28 @@ jobs:
     runs-on: ubuntu-latest
     environment: 
       name: ${{ inputs.environment_name }}
+      
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4.1.1
 
-      - name: Print ENV
-        run: env
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2.0.3
+        with:
+          terraform_version: latest
 
-      - name: Print Environment Name
-        run: echo "Environment Name is ${{ inputs.environment_name }}"
+      - name: Download Terraform Plan
+        uses: actions/download-artifact@v4.1.2
+        with:
+          name: terraform-plan
+          path: ${{ github.workspace }}     
+
+      - name: Terraform Init
+        run: terraform init -backend-config="key=${{ inputs.environment_name }}.terraform.tfstate"
+
+      - name: Terraform Apply
+        run: |
+          terraform apply -auto-approve "${{ inputs.environment_name }}.tfplan"
+
+
+
