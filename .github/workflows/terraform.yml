@@ -59,7 +59,7 @@ jobs:
 
   terrafrom-apply:
     name: 'Terraform Apply'
-    needs: terraform_plan
+    needs: terraform-plan
     if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/feature/')
     runs-on: ubuntu-latest
     environment: 
