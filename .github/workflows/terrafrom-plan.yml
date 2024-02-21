@@ -1,0 +1,21 @@
+
+name: Terraform Plan
+on: workflow_call
+
+jobs:
+
+  terraform_plan:
+    name: 'Terraform Plan'
+    if: github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/heads/feature/')
+    runs-on: ubuntu-latest
+    environment: 
+      name: test
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Print ENV
+        run: env
+
+      - name: Print Environment Name
+        run: echo "Environment Name is ${{ job.environment.name }}"
