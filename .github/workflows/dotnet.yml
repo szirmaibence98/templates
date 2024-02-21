@@ -38,7 +38,8 @@ jobs:
       working-directory: ${{ inputs.working-directory }}
 
     - name: Publish
-      run: dotnet publish ./src/YourProject.sln -c Release -o ./publish
+      run: dotnet publish -c Release -o ../publish
+      working-directory: ${{ inputs.working-directory }}
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v2
