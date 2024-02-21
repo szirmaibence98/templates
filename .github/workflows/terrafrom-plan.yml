@@ -39,7 +39,7 @@ jobs:
         run: terraform plan -var-file="${{ job.environment.name }}.tfvars" -out="${{ job.environment.name }}.tfplan"
 
       - name: Archive Terraform Plan
-        uses: actions/upload-artifact@3.0.0
+        uses: actions/upload-artifact@v4.3.1
         with:
           name: terraform-plan
           path: ${{ job.environment.name }}.tfplan
