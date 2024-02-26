@@ -42,7 +42,7 @@ jobs:
         run: terraform init -backend-config="key=${{ inputs.environment_name }}.terraform.tfstate"
           
       - name: Terraform Validate
-        run: terraform validate -var-file="${{ inputs.environment_name }}.tfvars"
+        run: terraform validate
 
       - name: Terraform Plan
         run: terraform plan -var-file="${{ inputs.environment_name }}.tfvars" -out="${{ inputs.environment_name }}.tfplan"
