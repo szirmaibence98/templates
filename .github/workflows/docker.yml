@@ -23,11 +23,11 @@ jobs:
   docker-build:
     runs-on: ubuntu-latest
 
-    steps:
-    - uses: actions/checkout@v2
+    - name: Checkout Repository
+      uses: actions/checkout@v4.1.1
 
     - name: Download Artifacts
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v4.1.4
       with:
         name: published-app
         path: ./publish
@@ -37,17 +37,27 @@ jobs:
       uses: docker/setup-buildx-action@v1
 
     - name: Login to DockerHub
-      uses: docker/login-action@v1
+      uses: docker/login-action@v3.0.0
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
-    - name: Build and push Docker image
-      uses: docker/build-push-action@v2
+    - name: Kaniko builder
+      uses: aevea/action-kaniko@v0.11.0
       with:
-        context: ${{ inputs.docker-context }}
-        file: ${{ inputs.dockerfile-path }}
-        push: true
-        tags: ${{ inputs.image-name }}
+        path: ${{ inputs.docker-context }}
+        registry: docker.io
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        image: ${{ inputs.image-name }}
+        build_file: ${{ inputs.dockerfile-path }}
+
+#    - name: Build and push Docker image
+#      uses: docker/build-push-action@v2
+#      with:
+#        context: ${{ inputs.docker-context }}
+#        file: ${{ inputs.dockerfile-path }}
+#        push: true
+#        tags: ${{ inputs.image-name }}
 
 
