@@ -27,6 +27,16 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4.1.1
 
+      - name: Download Version Artifact
+        uses: actions/download-artifact@v4.1.4
+        with:
+          name: version
+
+      - name: Read Version Info
+        id: read_version
+        run: echo "::set-output name=version::$(cat version/*.json | jq -r .SemVer)"
+
+
       - name: Download Artifacts
         uses: actions/download-artifact@v4.1.4
         with:
