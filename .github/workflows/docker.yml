@@ -62,5 +62,6 @@ jobs:
           registry: docker.io
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          image: ${{ inputs.image-name }}:${{ steps.set_tag.outputs.tag }}
+          image: szirmaibence98/testimage:${{ steps.set_tag.outputs.tag }}
+#          ${{ inputs.image-name }}:${{ steps.set_tag.outputs.tag }}
           build_file: ${{ inputs.dockerfile-path }}
