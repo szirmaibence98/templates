@@ -41,10 +41,12 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build Docker image with Kaniko
-        uses: docker://gcr.io/kaniko-project/executor:latest
-        with:
-          args: |
-            --dockerfile=${{ inputs.dockerfile-path }}
-            --context=dir://${{ inputs.docker-context }}
-            --destination=${{ inputs.image-name }}
+
+      - name: Build and push Docker image with Kaniko
+        run: |
+          /kaniko/executor --dockerfile=${{ inputs.dockerfile-path }} --context=dir://${{ inputs.docker-context }} --destination=${{ inputs.image-name }}
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+
+            
