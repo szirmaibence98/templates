@@ -37,9 +37,7 @@ jobs:
         id: set_tag
         run: echo "::set-output name=tag::$(cat /tmp/version.txt)"
         
-      - name: Read Version Info
-        id: read_version
-        run: echo "::set-output name=version::$(cat version/*.json | jq -r .SemVer)"
+
 
 
       - name: Download Artifacts
