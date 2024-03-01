@@ -1,3 +1,4 @@
+
 on:
   workflow_call: # This makes the workflow reusable
     inputs:
@@ -15,6 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: bitnami/kaniko:1.20.1-debian-12-r3
+      options: --entrypoint "/bin/sh"
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4.1.1
