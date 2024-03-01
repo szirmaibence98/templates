@@ -1,6 +1,3 @@
-      - name: Publish
-        run: dotnet publish -c Release -o ${{ github.workspace }}/publish ./${{ inputs.working-directory }}/*.csproj name: .NET
-
 on:
   workflow_call: # This makes the workflow reusable
     inputs:
@@ -34,9 +31,9 @@ jobs:
       - name: Publish
         run: dotnet publish -c Release -o ${{ github.workspace }}/publish ./${{ inputs.working-directory }}/*.csproj 
         
-      - name: Publish
+      - name: Publish44
         run: pwd
-      - name: Publish
+      - name: Publish3
         run: ls -la
        
       - name: Upload Artifacts
