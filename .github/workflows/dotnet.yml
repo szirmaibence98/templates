@@ -40,7 +40,8 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: published-app
-          path: ${{ github.workspace }}/publish
+          path: /__w/dotnet/dotnet/src/bin/Release/net8.0
+
 
 
 
