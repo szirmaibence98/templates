@@ -33,12 +33,7 @@ jobs:
       - name: Publish
         run: dotnet publish -c Release -o ../publish ./${{ inputs.working-directory }}/*.csproj 
 
-      - name: Debug Publish Directory
-        run: |
-          ls -l ../publish
-          pwd
-          ls -la ${{ github.workspace }}
-        
+       
       - name: Upload Artifacts
         uses: actions/upload-artifact@v2
         with:
