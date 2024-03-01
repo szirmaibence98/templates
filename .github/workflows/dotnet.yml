@@ -15,7 +15,6 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: bitnami/kaniko:latest
-      options: --user root
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4.1.1
