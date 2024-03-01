@@ -29,9 +29,10 @@ jobs:
 
       - name: Test
         run: dotnet test ./${{ inputs.working-directory }}/*.csproj --configuration Release
-
+        
       - name: Publish
-        run: dotnet publish -c Release -o ../publish ./${{ inputs.working-directory }}/*.csproj 
+        run: dotnet publish -c Release -o ${{ github.workspace }}/publish ./${{ inputs.working-directory }}/*.csproj 
+
 
        
       - name: Upload Artifacts
