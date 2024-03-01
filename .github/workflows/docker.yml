@@ -19,13 +19,20 @@ on:
       DOCKER_PASSWORD:
         required: true
 
+
+
+
 jobs:
   docker-build:
     runs-on: ubuntu-latest
     container:
-      image: bitnami/kaniko:latest
+      image: docker://gcr.io/kaniko-project/executor:debug
 
     steps:
+
+      - name: env
+        run: env
+    
       - uses: actions/checkout@v2
 
       - name: Download Artifacts
