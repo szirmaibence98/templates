@@ -28,20 +28,15 @@ jobs:
       - name: Test
         run: dotnet test ./${{ inputs.working-directory }}/*.csproj --configuration Release
         
+
+
+
       - name: Publish
         run: dotnet publish -c Release -o ${{ github.workspace }}/publish ./${{ inputs.working-directory }}/*.csproj 
         
-      - name: Publish44
-        run: pwd
-      - name: Publish3
-        run: ls -la
-       
       - name: Upload Artifacts
         uses: actions/upload-artifact@v2
         with:
           name: published-app
-          path: /__w/dotnet/dotnet/src/bin/Release/net8.0
-
-
-
+          path: ${{ github.workspace }}/publish
 
