@@ -57,12 +57,10 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Kaniko builder
-        uses: aevea/action-kaniko@v0.11.0
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v2
         with:
-          path: ${{ inputs.docker-context }}
-          registry: docker.io
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          image: ${{ inputs.image-name }}:${{ steps.set_tag.outputs.tag }}
-          build_file: ${{ inputs.dockerfile-path }}
+          context: ${{ inputs.docker-context }}
+          file: ${{ inputs.dockerfile-path }}
+          push: true
+          tags: ${{ inputs.image-name }}:${{ steps.set_tag.outputs.tag }}
