@@ -32,9 +32,10 @@ jobs:
 
       - name: Publish
         run: dotnet publish -c Release -o ../publish ./${{ inputs.working-directory }}/*.csproj 
-
+        
       - name: Upload Artifacts
         uses: actions/upload-artifact@v2
         with:
           name: published-app
-          path: ./publish
+          path: ${{ github.workspace }}/publish
+
