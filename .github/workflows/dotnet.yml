@@ -1,0 +1,42 @@
+name: .NET
+
+on:
+  workflow_call: # This makes the workflow reusable
+    inputs:
+      dotnet-version:
+        required: true
+        type: string
+      working-directory:
+        required: false
+        default: 'src' # Set default working directory to src
+        type: string
+
+jobs:
+
+
+buildrrr:
+  runs-on: ubuntu-latest
+  container:
+    image: mcr.microsoft.com/dotnet/sdk:8.0
+    options: --user root
+  steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4.1.1
+
+    - name: Restore dependencies
+      run: dotnet restore ./${{ inputs.working-directory }}/*.csproj
+
+    - name: Build
+      run: dotnet build ./${{ inputs.working-directory }}/*.csproj --configuration Release
+
+    - name: Test
+      run: dotnet test ./${{ inputs.working-directory }}/*.csproj --configuration Release
+
+    - name: Publish
+      run: dotnet publish -c Release -o ../publish
+
+  - name: Upload Artifacts
+    uses: actions/upload-artifact@v2
+    with:
+      name: published-app
+      path: ./publish
