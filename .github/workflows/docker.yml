@@ -23,7 +23,7 @@ jobs:
   docker-build:
     runs-on: ubuntu-latest
     container:
-      image: docker://gcr.io/kaniko-project/executor:latest
+      image: bitnami/kaniko:latest
 
     steps:
       - uses: actions/checkout@v2
