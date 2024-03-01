@@ -1,0 +1,50 @@
+name: Docker Image Build
+
+on:
+  workflow_call:
+    inputs:
+      image-name:
+        required: true
+        type: string
+      docker-context:
+        required: true
+        type: string
+      dockerfile-path:
+        required: false
+        default: './Dockerfile'
+        type: string
+    secrets:
+      DOCKER_USERNAME:
+        required: true
+      DOCKER_PASSWORD:
+        required: true
+
+jobs:
+  docker-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Download Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: published-app
+          path: ./publish
+  
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build Docker image with Kaniko
+        uses: docker://gcr.io/kaniko-project/executor:latest
+        with:
+          args: |
+            --dockerfile=${{ inputs.dockerfile-path }}
+            --context=dir://${{ inputs.docker-context }}
+            --destination=${{ inputs.image-name }}
