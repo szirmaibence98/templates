@@ -63,14 +63,3 @@ jobs:
           file: ${{ inputs.dockerfile-path }}
           push: true
           tags: ${{ inputs.image-name }}:${{ steps.set_tag.outputs.tag }}
-
-      - name: Kaniko builder
-        uses: aevea/action-kaniko@v0.11.0
-        with:
-          path: ${{ inputs.docker-context }}
-          registry: docker.io
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          image: szirmaibence98/testimage:0.1.0
-#          ${{ inputs.image-name }}:${{ steps.set_tag.outputs.tag }}
-          build_file: ${{ inputs.dockerfile-path }}
