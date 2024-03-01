@@ -15,7 +15,7 @@ jobs:
   docker-build:
     runs-on: ubuntu-latest
     container:
-      image: bitnami/kaniko:1.20.1-debian-12-r3
+      image: docker://bitnami/kaniko:1.20.1-debian-12-r3
       options: --entrypoint "/bin/sh"
     steps:
       - name: Checkout Repository
