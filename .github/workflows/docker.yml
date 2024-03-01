@@ -22,7 +22,9 @@ on:
 jobs:
   docker-build:
     runs-on: ubuntu-latest
-
+    container:
+      image: gcr.io/kaniko-project/executor:latest
+      
     steps:
       - uses: actions/checkout@v2
 
@@ -43,7 +45,6 @@ jobs:
 
 
       - name: Build and push Docker image with Kaniko
-          uses: docker://gcr.io/kaniko-project/executor:latest
         run: |
           /kaniko/executor --dockerfile=${{ inputs.dockerfile-path }} --context=dir://${{ inputs.docker-context }} --destination=${{ inputs.image-name }}
         env:
