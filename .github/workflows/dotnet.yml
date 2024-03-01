@@ -37,12 +37,13 @@ jobs:
         run: |
           ls -l ../publish
           pwd
-
+          ls -la ${{ github.workspace }}
         
       - name: Upload Artifacts
         uses: actions/upload-artifact@v2
         with:
           name: published-app
-          path: ${{ github.workspace }}/publish
+          path: ${{ github.workspace }}
+
 
 
