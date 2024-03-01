@@ -27,11 +27,16 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4.1.1
 
-      - name: Download Version Artifact
-        uses: actions/download-artifact@v4.1.4
+      - name: Download version file
+        uses: actions/download-artifact@v2
         with:
           name: version
-
+          path: /tmp
+          
+      - name: Set Docker tag
+        id: set_tag
+        run: echo "::set-output name=tag::$(cat /tmp/version.txt)"
+        
       - name: Read Version Info
         id: read_version
         run: echo "::set-output name=version::$(cat version/*.json | jq -r .SemVer)"
@@ -59,5 +64,5 @@ jobs:
           registry: docker.io
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          image: ${{ inputs.image-name }}
+          image: ${{ inputs.image-name }}:${{ steps.set_tag.outputs.tag }}
           build_file: ${{ inputs.dockerfile-path }}
