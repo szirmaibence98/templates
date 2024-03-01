@@ -12,13 +12,7 @@ on:
 
 jobs:
 
-  docker-build:
-    runs-on: ubuntu-latest
-    container:
-      image: docker://gcr.io/kaniko-project/executor:debug
-    steps:
-      - name: Checkout Repository
-        run: env
+
         
   build:
     runs-on: ubuntu-latest
