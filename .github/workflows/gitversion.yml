@@ -72,7 +72,7 @@ jobs:
   display-semver:
     name: Display Semantic Version
     runs-on: ubuntu-latest
-    needs: calculate-version
+    needs: gitversion
     env:
       SEMVER: ${{ needs.gitversion.outputs.version }}
     steps:
