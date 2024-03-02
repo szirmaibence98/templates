@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     
     outputs:
-      version: ${{ steps.determine_version.outputs.version }}
+      version: ${{ steps.determine_version.outputs.FullSemVer }}
       
     steps:
       - name: Checkout Repository
@@ -27,19 +27,79 @@ jobs:
           versionSpec: '5.x'
           preferLatestVersion: true
 
+    
+      - name: Display GitVersion variables (without prefix)
+        run: |
+          echo "Major: ${{ env.major }}"
+          echo "Minor: ${{ env.minor }}"
+          echo "Patch: ${{ env.patch }}"
+          echo "PreReleaseTag: ${{ env.preReleaseTag }}"
+          echo "PreReleaseTagWithDash: ${{ env.preReleaseTagWithDash }}"
+          echo "PreReleaseLabel: ${{ env.preReleaseLabel }}"
+          echo "PreReleaseNumber: ${{ env.preReleaseNumber }}"
+          echo "WeightedPreReleaseNumber: ${{ env.weightedPreReleaseNumber }}"
+          echo "BuildMetaData: ${{ env.buildMetaData }}"
+          echo "BuildMetaDataPadded: ${{ env.buildMetaDataPadded }}"
+          echo "FullBuildMetaData: ${{ env.fullBuildMetaData }}"
+          echo "MajorMinorPatch: ${{ env.majorMinorPatch }}"
+          echo "SemVer: ${{ env.semVer }}"
+          echo "LegacySemVer: ${{ env.legacySemVer }}"
+          echo "LegacySemVerPadded: ${{ env.legacySemVerPadded }}"
+          echo "AssemblySemVer: ${{ env.assemblySemVer }}"
+          echo "AssemblySemFileVer: ${{ env.assemblySemFileVer }}"
+          echo "FullSemVer: ${{ env.fullSemVer }}"
+          echo "InformationalVersion: ${{ env.informationalVersion }}"
+          echo "BranchName: ${{ env.branchName }}"
+          echo "EscapedBranchName: ${{ env.escapedBranchName }}"
+          echo "Sha: ${{ env.sha }}"
+          echo "ShortSha: ${{ env.shortSha }}"
+          echo "NuGetVersionV2: ${{ env.nuGetVersionV2 }}"
+          echo "NuGetVersion: ${{ env.nuGetVersion }}"
+          echo "NuGetPreReleaseTagV2: ${{ env.nuGetPreReleaseTagV2 }}"
+          echo "NuGetPreReleaseTag: ${{ env.nuGetPreReleaseTag }}"
+          echo "VersionSourceSha: ${{ env.versionSourceSha }}"
+          echo "CommitsSinceVersionSource: ${{ env.commitsSinceVersionSource }}"
+          echo "CommitsSinceVersionSourcePadded: ${{ env.commitsSinceVersionSourcePadded }}"
+          echo "UncommittedChanges: ${{ env.uncommittedChanges }}"
+          echo "CommitDate: ${{ env.commitDate }}"
+    
+      - name: Display GitVersion variables (with prefix)
+        run: |
+          echo "Major: ${{ env.GitVersion_Major }}"
+          echo "Minor: ${{ env.GitVersion_Minor }}"
+          echo "Patch: ${{ env.GitVersion_Patch }}"
+          echo "PreReleaseTag: ${{ env.GitVersion_PreReleaseTag }}"
+          echo "PreReleaseTagWithDash: ${{ env.GitVersion_PreReleaseTagWithDash }}"
+          echo "PreReleaseLabel: ${{ env.GitVersion_PreReleaseLabel }}"
+          echo "PreReleaseNumber: ${{ env.GitVersion_PreReleaseNumber }}"
+          echo "WeightedPreReleaseNumber: ${{ env.GitVersion_WeightedPreReleaseNumber }}"
+          echo "BuildMetaData: ${{ env.GitVersion_BuildMetaData }}"
+          echo "BuildMetaDataPadded: ${{ env.GitVersion_BuildMetaDataPadded }}"
+          echo "FullBuildMetaData: ${{ env.GitVersion_FullBuildMetaData }}"
+          echo "MajorMinorPatch: ${{ env.GitVersion_MajorMinorPatch }}"
+          echo "SemVer: ${{ env.GitVersion_SemVer }}"
+          echo "LegacySemVer: ${{ env.GitVersion_LegacySemVer }}"
+          echo "LegacySemVerPadded: ${{ env.GitVersion_LegacySemVerPadded }}"
+          echo "AssemblySemVer: ${{ env.GitVersion_AssemblySemVer }}"
+          echo "AssemblySemFileVer: ${{ env.GitVersion_AssemblySemFileVer }}"
+          echo "FullSemVer: ${{ env.GitVersion_FullSemVer }}"
+          echo "InformationalVersion: ${{ env.GitVersion_InformationalVersion }}"
+          echo "BranchName: ${{ env.GitVersion_BranchName }}"
+          echo "EscapedBranchName: ${{ env.GitVersion_EscapedBranchName }}"
+          echo "Sha: ${{ env.GitVersion_Sha }}"
+          echo "ShortSha: ${{ env.GitVersion_ShortSha }}"
+          echo "NuGetVersionV2: ${{ env.GitVersion_NuGetVersionV2 }}"
+          echo "NuGetVersion: ${{ env.GitVersion_NuGetVersion }}"
+          echo "NuGetPreReleaseTagV2: ${{ env.GitVersion_NuGetPreReleaseTagV2 }}"
+          echo "NuGetPreReleaseTag: ${{ env.GitVersion_NuGetPreReleaseTag }}"
+          echo "VersionSourceSha: ${{ env.GitVersion_VersionSourceSha }}"
+          echo "CommitsSinceVersionSource: ${{ env.GitVersion_CommitsSinceVersionSource }}"
+          echo "CommitsSinceVersionSourcePadded: ${{ env.GitVersion_CommitsSinceVersionSourcePadded }}"
+          echo "UncommittedChanges: ${{ env.GitVersion_UncommittedChanges }}"
+          echo "CommitDate: ${{ env.GitVersion_CommitDate }}"
+
       - name: Determine Version
         id: determine_version
-        run: |
-          # Run GitVersion command and capture the output
-          version=$(gitversion)
-          
-          # Extract major, minor, and patch components from the version string
-          major=$(echo $version | jq -r '.Major')
-          minor=$(echo $version | jq -r '.Minor')
-          patch=$(echo $version | jq -r '.Patch')
-          
-          # Concatenate major, minor, and patch components to form MajorMinorPatch version
-          major_minor_patch="${major}.${minor}.${patch}"
-          
-          # Set the output
-          echo "::set-output name=version::${major_minor_patch}"
+        uses: gittools/actions/gitversion/execute@v0
+        with:
+          useConfigFile: true
