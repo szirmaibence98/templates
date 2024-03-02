@@ -29,6 +29,11 @@ jobs:
       run: dotnet restore
       working-directory: ${{ inputs.working-directory }}
 
+    - name: Run Snyk vulnerability scan
+      run: snyk test
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
     - name: Build
       run: dotnet build --no-restore -c Release
       working-directory: ${{ inputs.working-directory }}
