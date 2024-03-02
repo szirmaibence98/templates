@@ -1,10 +1,20 @@
+name: GitVersion
 
+on:
+  workflow_call:
+    outputs:
+      version:
+        description: "The calculated version"
+        value: ${{ jobs.gitversion.outputs.version }}
 
+jobs:
   gitversion:
     name: 'Determine Version'
     runs-on: ubuntu-latest
+    
     outputs:
-      version: ${{ steps.determine_version.outputs.MajorMinorPatch }}
+      version: ${{ steps.determine_version.outputs.MajorMinorPatch }} # This line assumes that GitVersion Action directly sets such an output, which may not be directly supported
+    
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4.1.1
@@ -14,7 +24,7 @@
       - name: Install GitVersion
         uses: gittools/actions/gitversion/setup@v0
         with:
-          versionSpec: '5.x'     
+          versionSpec: '5.x'
           preferLatestVersion: true
 
       - name: Determine Version
