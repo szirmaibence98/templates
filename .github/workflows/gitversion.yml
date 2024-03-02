@@ -13,8 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     
     outputs:
-      version: ${{ steps.determine_version.outputs.MajorMinorPatch }} # This line assumes that GitVersion Action directly sets such an output, which may not be directly supported
-    
+      version: ${{ jobs.determine_version.outputs.version }}
+      
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4.1.1
@@ -27,8 +27,25 @@ jobs:
           versionSpec: '5.x'
           preferLatestVersion: true
 
+#      - name: Determine Version
+#        id: determine_version
+#        uses: gittools/actions/gitversion/execute@v0
+#        with:
+#          useConfigFile: true
+          
       - name: Determine Version
         id: determine_version
-        uses: gittools/actions/gitversion/execute@v0
-        with:
-          useConfigFile: true
+        run: |
+          # Run GitVersion command and capture the output
+          version=$(gitversion)
+          
+          # Extract major, minor, and patch components from the version string
+          major=$(echo $version | jq -r '.Major')
+          minor=$(echo $version | jq -r '.Minor')
+          patch=$(echo $version | jq -r '.Patch')
+          
+          # Concatenate major, minor, and patch components to form MajorMinorPatch version
+          major_minor_patch="${major}.${minor}.${patch}"
+          
+          # Set the output
+          echo "::set-output name=version::${major_minor_patch}"
