@@ -29,6 +29,9 @@ jobs:
       run: dotnet restore
       working-directory: ${{ inputs.working-directory }}
 
+    - name: Install Snyk CLI
+      run: npm install -g snyk
+
     - name: Run Snyk vulnerability scan
       run: snyk test
       env:
