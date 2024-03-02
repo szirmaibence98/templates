@@ -46,4 +46,4 @@ jobs:
           context: ${{ github.workspace }}
           file: ${{ github.workspace }}/${{ inputs.dockerfile-path }}
           push: true
-          tags: ${{ inputs.image-name }}:${{ needs.gitversion.outputs.version }}
+          tags: ${{ inputs.image-name }}:${{ inputs.version }}
