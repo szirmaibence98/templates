@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     
     outputs:
-      version: ${{ jobs.determine_version.outputs.version }}
+      version: ${{ steps.determine_version.outputs.version }}
       
     steps:
       - name: Checkout Repository
@@ -27,12 +27,6 @@ jobs:
           versionSpec: '5.x'
           preferLatestVersion: true
 
-#      - name: Determine Version
-#        id: determine_version
-#        uses: gittools/actions/gitversion/execute@v0
-#        with:
-#          useConfigFile: true
-          
       - name: Determine Version
         id: determine_version
         run: |
