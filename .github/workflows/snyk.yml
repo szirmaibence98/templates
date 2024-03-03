@@ -1,6 +1,7 @@
+name: Snyk
 
-
-
+on:
+  workflow_call:
 
   snyk:
     permissions:
