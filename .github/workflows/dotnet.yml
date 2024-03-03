@@ -17,6 +17,9 @@ jobs:
 
     steps:
 
+    - name: Echo Version
+      run: echo "Version is ${{ inputs.version }}"
+
     - name: Checkout Repository
       uses: actions/checkout@v4.1.1
 
