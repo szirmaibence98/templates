@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     
     outputs:
-      version: ${{ steps.determine_version.outputs.FullSemVer }}
+      version: ${{ steps.determine_version.outputs.SemVer }}
       
     steps:
       - name: Checkout Repository
