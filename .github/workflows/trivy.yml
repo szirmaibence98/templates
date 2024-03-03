@@ -38,7 +38,7 @@ jobs:
           echo "✅ Trivy scan completed"
 
       - name: Save Trivy Scan Results
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4.3.1
         with:
           name: trivy-results
           path: trivy-results.sarif
