@@ -21,8 +21,9 @@ jobs:
         id: read_tag
         run: |
           TAG=$(cat /tmp/version.txt)
-          echo "::set-output name=tag::$TAG"
           echo "Docker Image Tag: $TAG"
+          echo "tag=$TAG" >> $GITHUB_ENV
+
           
       - name: Download Trivy and JUnit Template
         run: |
