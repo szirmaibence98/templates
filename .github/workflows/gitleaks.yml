@@ -1,6 +1,10 @@
+name: Gitleaks
 
 
+on:
+  workflow_call:
 
+jobs:
 
   gitleaks:
     name: Run Gitleaks Scan
