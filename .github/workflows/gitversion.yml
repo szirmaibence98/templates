@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     
     outputs:
-      version: ${{ steps.determine_version.outputs.SemVer }}
+      version: ${{ steps.determine_version.outputs.FullSemVer }}
       
     steps:
       - name: Checkout Repository
@@ -64,7 +64,7 @@ jobs:
           echo "CommitDate: ${{ env.GitVersion_CommitDate }}"
 
       - name: Save version to file
-        run: echo "${{ steps.determine_version.outputs.SemVer }}" > /tmp/version.txt
+        run: echo "${{ steps.determine_version.outputs.FullSemVer }}" > /tmp/version.txt
 
       - name: Upload version artifact
         uses: actions/upload-artifact@v2
