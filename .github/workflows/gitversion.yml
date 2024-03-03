@@ -7,14 +7,13 @@ on:
         description: "The calculated version"
         value: ${{ jobs.gitversion.outputs.version }}
 
-      
 jobs:
   gitversion:
     name: 'Determine Version'
     runs-on: ubuntu-latest
     
     outputs:
-      version: ${{ steps.gitversion_output.outputs.version }}
+      version: ${{ steps.determine_version.outputs.FullSemVer }}
       
     steps:
       - name: Checkout Repository
@@ -69,14 +68,6 @@ jobs:
         uses: gittools/actions/gitversion/execute@v0
         with:
           useConfigFile: true
-          
-      - name: Set version output
-        id: set_output
-        run: echo "version=1.0.0" >> $GITHUB_OUTPUT
-        
-      - name: Use environment variable
-        run: echo "Version is $VERSION"
-
           
   display-semver:
     name: Display Semantic Version
