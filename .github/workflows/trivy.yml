@@ -33,9 +33,9 @@ jobs:
   
       - name: Run Trivy Vulnerability Scan
         run: |
-          trivy image --severity HIGH,CRITICAL --format sarif -o trivy-results.sarif ${{ steps.read_tag.outputs.tag }}
+          trivy image --severity HIGH,CRITICAL --format sarif -o trivy-results.sarif szirmaibence98/testimage:${{ steps.read_tag.outputs.tag }}
           echo "✅ Trivy scan completed"
-  
+
       - name: Save Trivy Scan Results
         uses: actions/upload-artifact@v2
         with:
