@@ -33,10 +33,18 @@ jobs:
           name: version
           path: /tmp
           
+#      - name: Set Docker tag
+#        id: set_tag
+#        run: echo "::set-output name=tag::$(cat /tmp/version.txt)"
+        
       - name: Set Docker tag
         id: set_tag
-        run: echo "::set-output name=tag::$(cat /tmp/version.txt)"
-        
+        run: |
+          VERSION=$(cat /tmp/version.txt)
+          CLEAN_VERSION=${VERSION/+/-} # Replace + with -
+          echo "::set-output name=tag::${CLEAN_VERSION}"
+
+          
       - name: Set Docker tagdsfs
         run: echo ${{ steps.set_tag.outputs.tag }}
 
@@ -56,12 +64,7 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Set Docker tag
-        id: set_tag
-        run: |
-          VERSION=$(cat /tmp/version.txt)
-          CLEAN_VERSION=${VERSION/+/-} # Replace + with -
-          echo "::set-output name=tag::${CLEAN_VERSION}"
+
 
 
       - name: Build and push Docker image
