@@ -68,10 +68,11 @@ jobs:
         uses: gittools/actions/gitversion/execute@v0
         with:
           useConfigFile: true
-
+          
       - name: Calculate version
         id: gitversion_output
-        run: echo "::set-output name=version::$(GitVersion | jq -r '.GitVersion_fullSemVer')"
+        run: |
+          echo "version=$(GitVersion | jq -r '.FullSemVer')" >> $GITHUB_OUTPUT
           
   display-semver:
     name: Display Semantic Version
