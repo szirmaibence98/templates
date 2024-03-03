@@ -39,11 +39,15 @@ jobs:
           echo "FullSemVer: ${{ steps.gitversion.outputs.FullSemVer }}"
 
     
+      - name: Set Output Version
+        run: echo "version=${{ steps.gitversion.outputs.semVer }}" >> $GITHUB_ENV
+        
       - name: Save version to file
-        run: echo "${{ steps.determine_version.outputs.FullSemVer }}" > /tmp/version.txt
+        run: echo "${{ steps.gitversion.outputs.FullSemVer }}" > /tmp/version.txt
 
       - name: Upload version artifact
         uses: actions/upload-artifact@v2
         with:
           name: version
-          path: /tmp/version.txt      
+          path: /tmp/version.txt
+
