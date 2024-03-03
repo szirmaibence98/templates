@@ -52,7 +52,7 @@ jobs:
         run: echo "${{ steps.set_tag.outputs.tag }}" > /tmp/version.txt
 
       - name: Upload version artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4.3.1
         with:
           name: version
           path: /tmp/version.txt
