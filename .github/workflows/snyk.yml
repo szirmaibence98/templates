@@ -1,7 +1,10 @@
 name: Snyk
 
+
 on:
   workflow_call:
+
+jobs:
 
   snyk:
     permissions:
@@ -10,7 +13,7 @@ on:
       actions: read
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4.1.1
   
       - name: Set up Snyk CLI to check for security issues
         uses: snyk/actions/setup@806182742461562b67788a64410098c9d9b96adb
