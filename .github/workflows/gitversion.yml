@@ -73,6 +73,10 @@ jobs:
       - name: Set version output
         id: set_output
         run: echo "version=1.0.0" >> $GITHUB_OUTPUT
+        
+      - name: Use environment variable
+        run: echo "Version is $VERSION"
+
           
   display-semver:
     name: Display Semantic Version
