@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     
     outputs:
-      version: ${{ steps.determine_version.outputs.FullSemVer }}
+      version: ${{ steps.set_tag.outputs.tag }}
       
     steps:
       - name: Checkout Repository
@@ -34,20 +34,25 @@ jobs:
           useConfigFile: true
           configFilePath: 'GitVersion.yml'
 
-      - name: Display GitVersion FullSemVer
+      - name: Set Docker tag with Branch Name
+        id: set_tag
         run: |
-          echo "FullSemVer: ${{ steps.gitversion.outputs.FullSemVer }}"
-
-    
-      - name: Set Output Version
-        run: echo "version=${{ steps.gitversion.outputs.semVer }}" >> $GITHUB_ENV
+          # Read the version from GitVersion output
+          VERSION="${{ steps.gitversion.outputs.semVer }}"
+          # Replace + with - in version
+          CLEAN_VERSION=${VERSION//+/-}
+          # Extract current branch name using Git and sanitize it by replacing disallowed characters with -
+          BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD | sed 's/[^a-zA-Z0-9._-]/-/g')
+          # Combine the cleaned version and sanitized branch name
+          TAG="${CLEAN_VERSION}-${BRANCH_NAME}"
+          echo "FullSemVer with Branch: $TAG"
+          echo "::set-output name=tag::${TAG}"
         
       - name: Save version to file
-        run: echo "${{ steps.gitversion.outputs.FullSemVer }}" > /tmp/version.txt
+        run: echo "${{ steps.set_tag.outputs.tag }}" > /tmp/version.txt
 
       - name: Upload version artifact
         uses: actions/upload-artifact@v2
         with:
           name: version
           path: /tmp/version.txt
-
