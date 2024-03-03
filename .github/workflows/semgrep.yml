@@ -1,0 +1,60 @@
+
+  semgrep:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+      actions: read    
+    container:
+      image: returntocorp/semgrep
+    steps:
+      # Install Semgrep
+      - name: Install Semgrep
+        run: |
+          pip install semgrep
+  
+      # Checkout Repository
+      - name: Checkout Repository
+        uses: actions/checkout@v4.1.1
+        with:
+          fetch-depth: 0
+  
+      # Run Semgrep with SARIF output
+      - name: Run Semgrep with SARIF output
+        run: |
+          semgrep \
+            --sarif --output report.sarif \
+            --metrics=off \
+            --config="p/default"
+  
+      # Save report as pipeline artifact
+      - name: Save report as pipeline artifact
+        uses: actions/upload-artifact@v4.3.1
+        with:
+          name: report.sarif
+          path: report.sarif
+  
+      # Upload SARIF file to GitHub
+      - name: Upload SARIF file
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: report.sarif
+        if: always()
+  
+  
+      # Install jq and Summarize Semgrep Findings
+      - name: Summarize Semgrep Findings
+        if: always()
+        run: |
+          sudo apt-get update && sudo apt-get install jq -y
+          if [ ! -f report.sarif ]; then
+            echo "Semgrep SARIF file not found. ❌" >> $GITHUB_STEP_SUMMARY
+          else
+            FINDINGS=$(jq '.runs[0].results | if length == 0 then "No issues found." else map(.ruleId + ": " + .message.text) | .[] end' report.sarif)
+            if [ "$FINDINGS" == "No issues found." ]; then
+              echo "$FINDINGS" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "Issues found:" >> $GITHUB_STEP_SUMMARY
+              echo "$FINDINGS" | sed 's/^/ - /' >> $GITHUB_STEP_SUMMARY
+            fi
+          fi
