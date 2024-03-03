@@ -3,14 +3,27 @@ name: Trivy Docker Scan
 on:
   workflow_call:
 
+
 jobs:
   trivy:
-
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4.1.1
-  
+
+      - name: Download version file
+        uses: actions/download-artifact@v2
+        with:
+          name: version
+          path: /tmp
+          
+      - name: Read Docker tag
+        id: read_tag
+        run: |
+          TAG=$(cat /tmp/version.txt)
+          echo "::set-output name=tag::$TAG"
+          echo "Docker Image Tag: $TAG"
+          
       - name: Download Trivy and JUnit Template
         run: |
           wget https://github.com/aquasecurity/trivy/releases/download/v0.45.0/trivy_0.45.0_Linux-64bit.tar.gz
@@ -18,13 +31,9 @@ jobs:
           sudo mv trivy /usr/local/bin/
           wget https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/junit.tpl -O junit.tpl
   
-      - name: Download Docker image
-        run: docker pull szirmaibence98/testimage:0.1.0
-  
       - name: Run Trivy Vulnerability Scan
-        id: trivy-scan
         run: |
-          trivy image --severity HIGH,CRITICAL --format sarif -o trivy-results.sarif szirmaibence98/testimage:0.1.0
+          trivy image --severity HIGH,CRITICAL --format sarif -o trivy-results.sarif ${{ steps.read_tag.outputs.tag }}
           echo "✅ Trivy scan completed"
   
       - name: Save Trivy Scan Results
