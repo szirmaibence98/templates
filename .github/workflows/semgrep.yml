@@ -1,4 +1,13 @@
+name: Semgrep
 
+
+on:
+  workflow_call:
+
+jobs:
+
+
+      
   semgrep:
     runs-on: ubuntu-latest
     permissions:
