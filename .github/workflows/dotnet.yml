@@ -6,6 +6,9 @@ on:
       dotnet-version:
         required: true
         type: string
+      version:
+        required: true
+        type: string
       working-directory:
         required: false
         default: 'src' # Set default working directory to src
