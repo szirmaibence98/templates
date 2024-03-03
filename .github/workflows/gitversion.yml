@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     
     outputs:
-      version: ${{ steps.determine_version.outputs.FullSemVer }}
+      version: ${{ steps.gitversion_output.outputs.version }}
       
     steps:
       - name: Checkout Repository
@@ -68,6 +68,10 @@ jobs:
         uses: gittools/actions/gitversion/execute@v0
         with:
           useConfigFile: true
+
+      - name: Calculate version
+        id: gitversion_output
+        run: echo "::set-output name=version::$(GitVersion | jq -r '.SemVer')"
           
   display-semver:
     name: Display Semantic Version
