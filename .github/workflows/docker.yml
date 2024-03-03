@@ -33,30 +33,10 @@ jobs:
           name: version
           path: /tmp
           
-#      - name: Set Docker tag
-#        id: set_tag
-#        run: echo "::set-output name=tag::$(cat /tmp/version.txt)"
-        
-#      - name: Set Docker tag
-#        id: set_tag
-#        run: |
-#          VERSION=$(cat /tmp/version.txt)
-#          CLEAN_VERSION=${VERSION/+/-} # Replace + with -
-#          echo "::set-output name=tag::${CLEAN_VERSION}"
-
-      - name: Set Docker tag with Branch Name
+      - name: Set Docker tag
         id: set_tag
-        run: |
-          # Read the version from the file
-          VERSION=$(cat /tmp/version.txt)
-          # Replace + with - in version
-          CLEAN_VERSION=${VERSION/+/-}
-          # Extract current branch name using Git and sanitize it by replacing disallowed characters with -
-          BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD | sed 's/[^a-zA-Z0-9._-]/-/g')
-          # Combine the cleaned version and sanitized branch name
-          TAG="${CLEAN_VERSION}-${BRANCH_NAME}"
-          echo "::set-output name=tag::${TAG}"
-
+        run: echo "::set-output name=tag::$(cat /tmp/version.txt)"
+        
           
       - name: Set Docker tagdsfs
         run: echo ${{ steps.set_tag.outputs.tag }}
