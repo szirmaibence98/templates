@@ -1,7 +1,8 @@
 name: Package and Push Helm Chart to ACR
 
+
 on:
-  push:
+  workflow_call:
     branches:
       - main
     paths:
