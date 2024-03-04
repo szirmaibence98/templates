@@ -3,10 +3,7 @@ name: Package and Push Helm Chart to ACR
 
 on:
   workflow_call:
-    branches:
-      - main
-    paths:
-      - 'charts/**' # Adjust based on the location of your Helm charts
+
 
 jobs:
   package-and-push:
