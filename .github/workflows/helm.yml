@@ -3,7 +3,11 @@ name: Package and Push Helm Chart to ACR
 
 on:
   workflow_call:
-
+    secrets:
+      ACR_USERNAME:
+        required: true
+      ACR_PASSWORD:
+        required: true
 
 jobs:
   package-and-push:
