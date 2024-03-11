@@ -10,13 +10,16 @@ on:
         required: false
         default: 'src' # Set default working directory to src
         type: string
-
+      release:
+        description: 'Skip workflow if set to true for releases'
+        required: false
+        type: boolean
         
 jobs:
   dotnet:
 
     runs-on: ubuntu-latest
-
+    if: ${{ inputs.release == false }} 
     steps:
 
     - name: Checkout Repository
