@@ -28,16 +28,18 @@ jobs:
           name: version
           path: /tmp
 
-      - name: Set chartVersion
-        id: set_chart_version
+      - name: Set chartVersion and appVersion
+        id: set_versions
         run: |
           ORIGINAL_VERSION=$(cat /tmp/version.txt)
+          # Set appVersion to the original version always
+          echo "appVersion=$ORIGINAL_VERSION" >> $GITHUB_ENV
           # Check if the current branch is main
           if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
             # Use the original version for main branch
             echo "chartVersion=$ORIGINAL_VERSION" >> $GITHUB_ENV
           else
-            # For feature branches, use version 0.0.1
+            # For feature branches, use version 0.0.1 for chartVersion
             echo "chartVersion=0.0.1" >> $GITHUB_ENV
           fi
           
@@ -48,9 +50,10 @@ jobs:
 
       - name: Log in to Azure Container Registry
         run: echo "${{ secrets.ACR_PASSWORD }}" | helm registry login szirmaibence98.azurecr.io --username ${{ secrets.ACR_USERNAME }} --password-stdin
-
+        
       - name: Package Helm chart
-        run: helm package charts/mychart -d .deploy --version ${{ env.chartVersion }}
+        run: helm package charts/mychart -d .deploy --version ${{ env.chartVersion }} --app-version ${{ env.appVersion }}
+
   
       - name: Push Helm chart to ACR
         run: |
