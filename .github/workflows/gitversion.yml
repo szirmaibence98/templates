@@ -72,8 +72,12 @@ jobs:
         run: |
           VERSION=$(gitversion /showvariable FullSemVer) # Assuming gitversion is available and configured
           echo "::set-output name=version::$VERSION"
-      
 
+      
+  settag:
+    name: 'Determine Version'
+    runs-on: ubuntu-latest
+    
       - name: Create Tag (if RELEASE is true and branch is main)
         if: github.ref == 'refs/heads/main' && github.event.inputs.release == 'true'
         run: |
