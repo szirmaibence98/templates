@@ -22,12 +22,20 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Download version file
+        uses: actions/download-artifact@v2
+        with:
+          name: version
+          path: /tmp
+  
+      - name: Set chartVersion
+        id: set_chart_version
+        run: echo "chartVersion=$(cat /tmp/version.txt)" >> $GITHUB_ENV
+
       - name: Helm tool installer
         uses: Azure/setup-helm@v4
         with:
           version: latest
-
-          
 
       - name: Log in to Azure Container Registry
         run: echo "${{ secrets.ACR_PASSWORD }}" | helm registry login szirmaibence98.azurecr.io --username ${{ secrets.ACR_USERNAME }} --password-stdin
@@ -35,9 +43,15 @@ jobs:
       - name: Package Helm chart
         run: helm package charts/mychart --destination .deploy
 
+#      - name: Push Helm chart to ACR
+#        run: |
+#          CHART_VERSION=$(helm show chart .deploy/mychart-*.tgz | grep 'version:' | cut -d ' ' -f 2)
+#          helm push .deploy/mychart-${CHART_VERSION}.tgz oci://szirmaibence98.azurecr.io/mychart
+
+
+  
       - name: Push Helm chart to ACR
         run: |
-          CHART_VERSION=$(helm show chart .deploy/mychart-*.tgz | grep 'version:' | cut -d ' ' -f 2)
+          CHART_VERSION=${{ env.chartVersion }}
+          echo "Using chart version: $CHART_VERSION"
           helm push .deploy/mychart-${CHART_VERSION}.tgz oci://szirmaibence98.azurecr.io/mychart
-
-      # Optional: Add steps to verify the push, cleanup, etc.
