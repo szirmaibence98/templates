@@ -40,8 +40,22 @@ jobs:
           # Read the version from GitVersion output
           VERSION="${{ steps.gitversion.outputs.semVer }}"
           
-          # Use the semver directly for all branches
-          TAG="$VERSION"
+          # Assuming we have a variable for the current branch name
+          CURRENT_BRANCH="${{ github.ref }}"
+          
+          # Extract major, minor, and patch components
+          MAJOR=$(echo $VERSION | cut -d. -f1)
+          MINOR=$(echo $VERSION | cut -d. -f2)
+          PATCH=$(echo $VERSION | cut -d. -f3)
+          
+          # Check if the current branch is a feature branch
+          if [[ "$CURRENT_BRANCH" == refs/heads/feature/* ]]; then
+              # For feature branches, use major.minor.patch
+              TAG="$MAJOR.$MINOR.$PATCH"
+          else
+              # For all other branches, use the semver directly
+              TAG="$VERSION"
+          fi
           
           echo "Tag: $TAG"
           echo "::set-output name=tag::${TAG}"
