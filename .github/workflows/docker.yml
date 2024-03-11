@@ -38,20 +38,24 @@ jobs:
           name: version
           path: /tmp
           
+
       - name: Set Docker Tag
         run: |
-          VERSION=$(cat /tmp/version.txt)
-          echo "DOCKER_TAG=$VERSION" >> $GITHUB_ENV
+          GITVERSION=$(cat /tmp/version.txt)
+          # Always set appVersion to the GitVersion
+          echo "DOCKER_TAG=$GITVERSION" >> $GITHUB_ENV
           
-          # Assuming you can modify the workflow_call to include a 'github_ref' input or similar
-          if [[ "${{ inputs.github_ref }}" == refs/tags/* ]]; then
-            # If the input suggests this was triggered by a tag, use the tag name directly
-            TAG_NAME=${{ inputs.github_ref }}#refs/tags/
+          # Check if the GitHub Action was triggered by a tag
+          if [[ "${{ github.ref }}" == refs/tags/* ]]; then
+            # Extract the tag name by removing the 'refs/tags/' prefix
+            TAG_NAME=${GITHUB_REF#refs/tags/}
             echo "DOCKER_TAG=$TAG_NAME" >> $GITHUB_ENV
           else
-            # Otherwise, use the version as is
-            echo "DOCKER_TAG=$VERSION" >> $GITHUB_ENV
-          fi    
+            # Use a default version for non-tagged commits
+            echo "chartVersion=0.0.1" >> $GITHUB_ENV
+          fi
+
+
 
       - name: Download Artifacts
         uses: actions/download-artifact@v4.1.4
