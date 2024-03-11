@@ -13,12 +13,11 @@ on:
       release:
         description: 'Skip workflow if set to true for releases'
         required: false
-        default: ''
         type: boolean
         
 jobs:
   dotnet:
-    if: ${{ inputs.release == 'false' }} 
+    if: ${{ inputs.release == false }} 
     runs-on: ubuntu-latest
 
     steps:
