@@ -17,6 +17,7 @@ on:
 
 jobs:
   package-and-push:
+    if: ${{ inputs.release == false }} 
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
