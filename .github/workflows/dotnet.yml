@@ -10,7 +10,12 @@ on:
         required: false
         default: 'src' # Set default working directory to src
         type: string
-
+      release:
+        description: 'Skip workflow if set to true for releases'
+        required: false
+        default: 'false'
+        type: boolean
+        
 jobs:
   build:
     runs-on: ubuntu-latest
