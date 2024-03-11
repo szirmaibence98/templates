@@ -60,7 +60,7 @@ jobs:
         if: github.ref == 'refs/heads/main' && github.event.inputs.release == 'true'
         run: |
           VERSION="${{ steps.set_tag.outputs.tag }}"
-          git tag $VERSION
+          git tag -a $VERSION -m "Release version $VERSION"
           git push origin $VERSION
 
       
