@@ -27,21 +27,23 @@ jobs:
         with:
           name: version
           path: /tmp
-
+      
       - name: Set chartVersion and appVersion
-        id: set_versions
         run: |
-          ORIGINAL_VERSION=$(cat /tmp/version.txt)
-          # Set appVersion to the original version always
-          echo "appVersion=$ORIGINAL_VERSION" >> $GITHUB_ENV
-          # Check if the current branch is main
-          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
-            # Use the original version for main branch
-            echo "chartVersion=$ORIGINAL_VERSION" >> $GITHUB_ENV
+          GITVERSION=$(cat /tmp/version.txt)
+          # Always set appVersion to the GitVersion
+          echo "appVersion=$GITVERSION" >> $GITHUB_ENV
+          
+          # Check if the GitHub Action was triggered by a tag
+          if [[ "${{ github.ref }}" == refs/tags/* ]]; then
+            # Extract the tag name by removing the 'refs/tags/' prefix
+            TAG_NAME=${GITHUB_REF#refs/tags/}
+            echo "chartVersion=$TAG_NAME" >> $GITHUB_ENV
           else
-            # For feature branches, use version 0.0.1 for chartVersion
+            # Use a default version for non-tagged commits
             echo "chartVersion=0.0.1" >> $GITHUB_ENV
           fi
+
           
       - name: Helm tool installer
         uses: Azure/setup-helm@v4
@@ -53,6 +55,7 @@ jobs:
         
       - name: Package Helm chart
         run: helm package charts/mychart -d .deploy --version ${{ env.chartVersion }} --app-version ${{ env.appVersion }}
+
 
   
       - name: Push Helm chart to ACR
