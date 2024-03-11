@@ -46,7 +46,8 @@ jobs:
             # For main branch, use semver as is
             TAG="$VERSION"
           else
-            # For other branches, replace + with - in version and append branch name
+            # For other branches, replace + with - in version, append branch name
+            # Sanitize branch name to ensure it's Docker tag compatible
             CLEAN_VERSION=${VERSION//+/-}
             SANITIZED_BRANCH_NAME=$(echo "$BRANCH_NAME" | sed 's/[^a-zA-Z0-9._-]/-/g')
             TAG="${CLEAN_VERSION}-${SANITIZED_BRANCH_NAME}"
