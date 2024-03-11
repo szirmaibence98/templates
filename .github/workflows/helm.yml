@@ -41,7 +41,7 @@ jobs:
         run: echo "${{ secrets.ACR_PASSWORD }}" | helm registry login szirmaibence98.azurecr.io --username ${{ secrets.ACR_USERNAME }} --password-stdin
 
       - name: Package Helm chart
-        run: helm package charts/mychart --destination .deploy
+        run: helm package mychart -d .deploy --version ${{ env.chartVersion }}
 
 #      - name: Push Helm chart to ACR
 #        run: |
