@@ -4,17 +4,15 @@ on:
   workflow_call:
     inputs:
       release:
-        description: 'Create release'
-        required: true
-        type: boolean
+        description: 'Skip workflow if set to true for releases'
+        required: false
+        type: boolean  
+
     outputs:
       version:
         description: "The calculated version"
         value: ${{ jobs.gitversion.outputs.version }}
-      release:
-        description: 'Skip workflow if set to true for releases'
-        required: false
-        type: boolean
+
 
         
 
