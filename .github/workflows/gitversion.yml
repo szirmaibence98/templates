@@ -2,25 +2,15 @@ name: GitVersion
 
 on:
   workflow_call:
-    inputs:
-      release:
-        description: 'Skip workflow if set to true for releases'
-        required: false
-        type: boolean  
-
     outputs:
       version:
         description: "The calculated version"
         value: ${{ jobs.gitversion.outputs.version }}
 
-
-        
-
 jobs:
   gitversion:
     name: 'Determine Version'
-    runs-on: ubuntu-latest    
-    if: ${{ inputs.release == false }} 
+    runs-on: ubuntu-latest
     
     outputs:
       version: ${{ steps.set_tag.outputs.tag }}
@@ -82,22 +72,13 @@ jobs:
         run: |
           VERSION=$(gitversion /showvariable FullSemVer) # Assuming gitversion is available and configured
           echo "::set-output name=version::$VERSION"
-
       
-
-  settag:
-    name: 'Create Tag'
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && inputs.release == 'true'
-    needs: gitversion
-    steps:
-    
       - name: Create Tag (if RELEASE is true and branch is main)
         if: github.ref == 'refs/heads/main' && github.event.inputs.release == 'true'
         run: |
           git config --global user.email "you@example.com"
           git config --global user.name "Your Name"
-          VERSION="${{ steps.set_tag.outputs.tag }}"
+          VERSION="${{ steps.gitversion.outputs.version }}" # Use the version calculated by GitVersion
           git tag -a $VERSION -m "Release version $VERSION"
           git push origin $VERSION
 
