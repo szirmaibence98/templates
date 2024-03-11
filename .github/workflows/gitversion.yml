@@ -78,12 +78,12 @@ jobs:
           path: /tmp/version.txt
 
       - name: Calculate Next Version with GitVersion
-        id: gitversion # Use GitVersion to calculate version
+        id: calculate_version
         run: |
           VERSION=$(gitversion /showvariable FullSemVer) # Assuming gitversion is available and configured
-          echo "::set-output name=version::$VERSION"
+          echo "::set-output name=version::$VERSION"      
 
-      
+
 
   settag:
     name: 'Create Tag'
