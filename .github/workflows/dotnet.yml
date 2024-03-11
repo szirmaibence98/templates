@@ -17,7 +17,7 @@ on:
         type: boolean
         
 jobs:
-  build:
+  dotnet:
     if: ${{ inputs.release == false }} 
     runs-on: ubuntu-latest
 
