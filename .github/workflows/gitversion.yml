@@ -8,7 +8,7 @@ on:
         value: ${{ jobs.gitversion.outputs.version }}
 
 jobs:
-  gitversion:
+  calculate_gitversion:
     name: 'Determine Version'
     runs-on: ubuntu-latest
     
