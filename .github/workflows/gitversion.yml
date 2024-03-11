@@ -38,27 +38,24 @@ jobs:
         id: set_tag
         run: |
           # Read the version from GitVersion output
-          VERSION="${{ steps.gitversion.outputs.semVer }}"
+          FULL_SEM_VER="${{ steps.gitversion.outputs.fullSemVer }}"
+          MAJOR_MINOR_PATCH="${{ steps.gitversion.outputs.majorMinorPatch }}"
           
-          # Assuming we have a variable for the current branch name
-          CURRENT_BRANCH="${{ github.ref }}"
+          # Get the branch name, assuming GitHub Actions syntax. Adjust for your CI/CD system.
+          BRANCH_NAME="${GITHUB_REF#refs/heads/}"
           
-          # Extract major, minor, and patch components
-          MAJOR=$(echo $VERSION | cut -d. -f1)
-          MINOR=$(echo $VERSION | cut -d. -f2)
-          PATCH=$(echo $VERSION | cut -d. -f3)
-          
-          # Check if the current branch is a feature branch
-          if [[ "$CURRENT_BRANCH" == refs/heads/feature/* ]]; then
-              # For feature branches, use major.minor.patch
-              TAG="$MAJOR.$MINOR.$PATCH"
+          # Check if the branch is a feature branch
+          if [[ "$BRANCH_NAME" == feature/* ]]; then
+              # For feature branches, use the fullSemVer
+              TAG="$FULL_SEM_VER"
           else
-              # For all other branches, use the semver directly
-              TAG="$VERSION"
+              # For non-feature branches, use majorMinorPatch
+              TAG="$MAJOR_MINOR_PATCH"
           fi
           
           echo "Tag: $TAG"
           echo "::set-output name=tag::${TAG}"
+
 
         
       - name: Save version to file
