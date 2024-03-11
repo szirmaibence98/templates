@@ -51,9 +51,19 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
+
+      - name: Determine Docker Image Tag
+        run: |
+          if [[ "${{ github.ref }}" == refs/tags/* ]]; then
+            TAG_NAME=${GITHUB_REF#refs/tags/}
+            echo "DOCKER_IMAGE_TAG=$TAG_NAME" >> $GITHUB_ENV
+          else
+            echo "DOCKER_IMAGE_TAG=latest" >> $GITHUB_ENV
+          fi
+      
       - name: Build and push Docker image with Kaniko
         run: |
-          /kaniko/executor --dockerfile=${{ inputs.dockerfile-path }} --context=dir://${{ inputs.docker-context }} --destination=${{ inputs.image-name }}
+          /kaniko/executor --dockerfile=${{ inputs.dockerfile-path }} --context=dir://${{ inputs.docker-context }} --destination=${{ inputs.image-name }}:${{ env.DOCKER_IMAGE_TAG }}
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
