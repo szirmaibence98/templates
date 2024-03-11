@@ -27,11 +27,20 @@ jobs:
         with:
           name: version
           path: /tmp
-  
+
       - name: Set chartVersion
         id: set_chart_version
-        run: echo "chartVersion=$(cat /tmp/version.txt)" >> $GITHUB_ENV
-
+        run: |
+          ORIGINAL_VERSION=$(cat /tmp/version.txt)
+          # Check if the current branch is main
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            # Use the original version for main branch
+            echo "chartVersion=$ORIGINAL_VERSION" >> $GITHUB_ENV
+          else
+            # For feature branches, use version 0.0.1
+            echo "chartVersion=0.0.1" >> $GITHUB_ENV
+          fi
+          
       - name: Helm tool installer
         uses: Azure/setup-helm@v4
         with:
@@ -42,14 +51,6 @@ jobs:
 
       - name: Package Helm chart
         run: helm package charts/mychart -d .deploy --version ${{ env.chartVersion }}
-
-
-#      - name: Push Helm chart to ACR
-#        run: |
-#          CHART_VERSION=$(helm show chart .deploy/mychart-*.tgz | grep 'version:' | cut -d ' ' -f 2)
-#          helm push .deploy/mychart-${CHART_VERSION}.tgz oci://szirmaibence98.azurecr.io/mychart
-
-
   
       - name: Push Helm chart to ACR
         run: |
