@@ -63,13 +63,21 @@ jobs:
         with:
           name: version
           path: /tmp/version.txt
+
+      - name: Create Tag (if RELEASE is true and branch is main)
+        if: github.ref == 'refs/heads/main' && github.event.inputs.release == 'true'
+        run: |
+          VERSION="${{ steps.set_tag.outputs.tag }}"
+          git tag $VERSION
+          git push origin $VERSION
+
       
   
-      - name: Tag Release
-        if: env.RELEASE == 'true'
-        run: |
-          git tag -a v${{ steps.gitversion.outputs.majorMinorPatch }} -m "Release ${{ steps.gitversion.outputs.majorMinorPatch }}"
-          git push origin v${{ steps.gitversion.outputs.majorMinorPatch }}
-        env:
-          RELEASE: ${{ github.event.inputs.RELEASE }}
+#      - name: Tag Release
+#        if: env.RELEASE == 'true'
+#        run: |
+#          git tag -a v${{ steps.gitversion.outputs.majorMinorPatch }} -m "Release ${{ steps.gitversion.outputs.majorMinorPatch }}"
+#          git push origin v${{ steps.gitversion.outputs.majorMinorPatch }}
+#        env:
+#          RELEASE: ${{ github.event.inputs.RELEASE }}
 
