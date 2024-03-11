@@ -8,7 +8,7 @@ on:
         value: ${{ jobs.gitversion.outputs.version }}
 
 jobs:
-  calculate_gitversion:
+  gitversion:
     name: 'Determine Version'
     runs-on: ubuntu-latest
     
@@ -67,21 +67,14 @@ jobs:
           name: version
           path: /tmp/version.txt
 
-      - name: Calculate Next Version with GitVersion
-        id: gitversion # Use GitVersion to calculate version
-        run: |
-          VERSION=$(gitversion /showvariable FullSemVer) # Assuming gitversion is available and configured
-          echo "::set-output name=version::$VERSION"
-      
       - name: Create Tag (if RELEASE is true and branch is main)
         if: github.ref == 'refs/heads/main' && github.event.inputs.release == 'true'
         run: |
           git config --global user.email "you@example.com"
           git config --global user.name "Your Name"
-          VERSION="${{ steps.gitversion.outputs.version }}" # Use the version calculated by GitVersion
+          VERSION="${{ steps.set_tag.outputs.tag }}"
           git tag -a $VERSION -m "Release version $VERSION"
           git push origin $VERSION
-
 
 
       
