@@ -39,13 +39,20 @@ jobs:
         run: |
           # Read the version from GitVersion output
           VERSION="${{ steps.gitversion.outputs.semVer }}"
-          # Replace + with - in version
-          CLEAN_VERSION=${VERSION//+/-}
-          # Extract current branch name using Git and sanitize it by replacing disallowed characters with -
-          BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD | sed 's/[^a-zA-Z0-9._-]/-/g')
-          # Combine the cleaned version and sanitized branch name
-          TAG="${CLEAN_VERSION}-${BRANCH_NAME}"
-          echo "FullSemVer with Branch: $TAG"
+          # Determine the current branch name
+          BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
+          
+          if [[ "$BRANCH_NAME" == "main" ]]; then
+            # For main branch, use semver as is
+            TAG="$VERSION"
+          else
+            # For other branches, replace + with - in version and append branch name
+            CLEAN_VERSION=${VERSION//+/-}
+            SANITIZED_BRANCH_NAME=$(echo "$BRANCH_NAME" | sed 's/[^a-zA-Z0-9._-]/-/g')
+            TAG="${CLEAN_VERSION}-${SANITIZED_BRANCH_NAME}"
+          fi
+          
+          echo "Tag: $TAG"
           echo "::set-output name=tag::${TAG}"
         
       - name: Save version to file
