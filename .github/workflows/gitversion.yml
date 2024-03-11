@@ -7,6 +7,7 @@ on:
         description: "The calculated version"
         value: ${{ jobs.gitversion.outputs.version }}
 
+    inputs:
       release:
         description: 'Skip workflow if set to true for releases'
         required: false
