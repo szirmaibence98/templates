@@ -38,14 +38,20 @@ jobs:
           name: version
           path: /tmp
           
-      - name: Set Docker tag
-        id: set_tag
-        run: echo "::set-output name=tag::$(cat /tmp/version.txt)"
-        
+      - name: Set Docker Tag
+        run: |
+          VERSION=$(cat /tmp/version.txt)
+          echo "DOCKER_TAG=$VERSION" >> $GITHUB_ENV
           
-#      - name: Set Docker tagdsfs
-#        run: echo ${{ steps.set_tag.outputs.tag }}
-
+          # Assuming you can modify the workflow_call to include a 'github_ref' input or similar
+          if [[ "${{ inputs.github_ref }}" == refs/tags/* ]]; then
+            # If the input suggests this was triggered by a tag, use the tag name directly
+            TAG_NAME=${{ inputs.github_ref }}#refs/tags/
+            echo "DOCKER_TAG=$TAG_NAME" >> $GITHUB_ENV
+          else
+            # Otherwise, use the version as is
+            echo "DOCKER_TAG=$VERSION" >> $GITHUB_ENV
+          fi    
 
       - name: Download Artifacts
         uses: actions/download-artifact@v4.1.4
@@ -61,14 +67,11 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-
-
-
-
+      
       - name: Build and push Docker image
         uses: docker/build-push-action@v5.1.0
         with:
           context: ${{ inputs.docker-context }}
           file: ${{ inputs.dockerfile-path }}
           push: true
-          tags: ${{ inputs.image-name }}:${{ steps.set_tag.outputs.tag }}
+          tags: ${{ inputs.image-name }}:${{ env.DOCKER_TAG }}
