@@ -2,22 +2,27 @@ name: GitVersion
 
 on:
   workflow_call:
+    inputs:
+      release:
+        description: 'Create release'
+        required: true
+        type: boolean
     outputs:
       version:
         description: "The calculated version"
         value: ${{ jobs.gitversion.outputs.version }}
-
       release:
         description: 'Skip workflow if set to true for releases'
         required: false
         type: boolean
+
         
 
 jobs:
   gitversion:
     name: 'Determine Version'
-    runs-on: ubuntu-latest
-    if: ${{ inputs.release == false }} 
+    runs-on: ubuntu-latest    
+    if: ${{ inputs.release == 'false' }} 
     
     outputs:
       version: ${{ steps.set_tag.outputs.tag }}
@@ -81,9 +86,13 @@ jobs:
           echo "::set-output name=version::$VERSION"
 
       
+
   settag:
-    name: 'Determine Version'
+    name: 'Create Tag'
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && inputs.release == 'true'
+    needs: gitversion
+    steps:
     
       - name: Create Tag (if RELEASE is true and branch is main)
         if: github.ref == 'refs/heads/main' && github.event.inputs.release == 'true'
