@@ -43,8 +43,8 @@ jobs:
         run: echo "::set-output name=tag::$(cat /tmp/version.txt)"
         
           
-      - name: Set Docker tagdsfs
-        run: echo ${{ steps.set_tag.outputs.tag }}
+#      - name: Set Docker tagdsfs
+#        run: echo ${{ steps.set_tag.outputs.tag }}
 
 
       - name: Download Artifacts
