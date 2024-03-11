@@ -7,10 +7,17 @@ on:
         description: "The calculated version"
         value: ${{ jobs.gitversion.outputs.version }}
 
+      release:
+        description: 'Skip workflow if set to true for releases'
+        required: false
+        type: boolean
+        
+
 jobs:
   gitversion:
     name: 'Determine Version'
     runs-on: ubuntu-latest
+    if: ${{ inputs.release == false }} 
     
     outputs:
       version: ${{ steps.set_tag.outputs.tag }}
