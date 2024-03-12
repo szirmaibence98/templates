@@ -7,6 +7,7 @@ on:
 jobs:
   trivy:
     runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.release == 'false' || !startsWith(github.ref, 'refs/tags/') }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4.1.1
