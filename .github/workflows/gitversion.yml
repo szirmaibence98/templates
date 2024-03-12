@@ -12,6 +12,7 @@ jobs:
   gitversion:
     name: 'Determine Version'
     runs-on: ubuntu-latest
+    if: ${{ !startsWith(github.ref, 'refs/tags/') }}
     outputs:
       version: ${{ steps.set_tag.outputs.tag }}
       
