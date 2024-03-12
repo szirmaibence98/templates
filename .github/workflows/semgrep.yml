@@ -10,6 +10,7 @@ jobs:
       
   semgrep:
     runs-on: ubuntu-latest
+    if: ${{ inputs.release == false }} 
     permissions:
       contents: read
       security-events: write
