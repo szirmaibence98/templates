@@ -13,7 +13,7 @@ jobs:
       
   semgrep:
     runs-on: ubuntu-latest
-    if: ${{ inputs.release == false }} 
+    if: ${{ github.event.inputs.release == 'false' || !startsWith(github.ref, 'refs/tags/') }}
     permissions:
       contents: read
       security-events: write
