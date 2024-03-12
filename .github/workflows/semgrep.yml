@@ -40,7 +40,7 @@ jobs:
       - name: Save report as pipeline artifact
         uses: actions/upload-artifact@v4.3.1
         with:
-          name: report.sarif
+          name: semgrep-results
           path: report.sarif
   
       # Upload SARIF file to GitHub
