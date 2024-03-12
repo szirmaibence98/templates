@@ -27,22 +27,26 @@ jobs:
         with:
           name: version
           path: /tmp
-      
+          
       - name: Set chartVersion and appVersion
         run: |
           GITVERSION=$(cat /tmp/version.txt)
-          # Always set appVersion to the GitVersion
           echo "appVersion=$GITVERSION" >> $GITHUB_ENV
           
-          # Check if the GitHub Action was triggered by a tag
-          if [[ "${{ github.ref }}" == refs/tags/* ]]; then
-            # Extract the tag name by removing the 'refs/tags/' prefix
-            TAG_NAME=${GITHUB_REF#refs/tags/}
-            echo "chartVersion=$TAG_NAME" >> $GITHUB_ENV
+          # Check if the GitHub Action was triggered by a tag or the main branch
+          if [[ "${{ github.ref }}" == refs/tags/* ]] || [[ "${{ github.ref }}" == refs/heads/main ]]; then
+            # Use GitVersion as chartVersion for tags and main branch
+            echo "chartVersion=$GITVERSION" >> $GITHUB_ENV
+          elif [[ "${{ github.ref }}" =~ refs/heads/feature/* ]]; then
+            # Use a default version for feature branches
+            echo "chartVersion=0.0.1" >> $GITHUB_ENV
           else
-            # Use a default version for non-tagged commits
+            # Fallback to a default version (just in case)
             echo "chartVersion=0.0.1" >> $GITHUB_ENV
           fi
+        env:
+          GITHUB_REF: ${{ github.ref }}
+
 
           
       - name: Helm tool installer
