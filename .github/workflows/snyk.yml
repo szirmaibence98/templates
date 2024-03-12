@@ -19,7 +19,7 @@ jobs:
       security-events: write
       actions: read
     runs-on: ubuntu-latest
-    if: ${{ inputs.release == false }} 
+    if: ${{ github.event.inputs.release == 'false' || !startsWith(github.ref, 'refs/tags/') }}
     steps:
       - uses: actions/checkout@v4.1.1
   
