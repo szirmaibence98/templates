@@ -71,18 +71,18 @@ jobs:
           path: /tmp/version.txt
 
       
-      - name: Create Tag (if RELEASE is true and branch is main)
-        if: github.ref == 'refs/heads/main' && github.event.inputs.release == 'true'
-        run: |
-          git config --global user.email "you@example.com"
-          git config --global user.name "Your Name"
-          VERSION="$TAG"
-          if [ -z "$VERSION" ]; then
-            echo "VERSION is empty, skipping tag creation."
-          else
-            echo "Creating and pushing tag $VERSION"
-            git tag -a $VERSION -m "Release version $VERSION"
-            git push origin $VERSION
-          fi
-        env:
-          TAG: ${{ env.TAG }}
+#      - name: Create Tag (if RELEASE is true and branch is main)
+#        if: github.ref == 'refs/heads/main' && github.event.inputs.release == 'true'
+#        run: |
+#          git config --global user.email "you@example.com"
+#          git config --global user.name "Your Name"
+#          VERSION="$TAG"
+#          if [ -z "$VERSION" ]; then
+#            echo "VERSION is empty, skipping tag creation."
+#          else
+#            echo "Creating and pushing tag $VERSION"
+#            git tag -a $VERSION -m "Release version $VERSION"
+#            git push origin $VERSION
+#          fi
+#        env:
+#          TAG: ${{ env.TAG }}
