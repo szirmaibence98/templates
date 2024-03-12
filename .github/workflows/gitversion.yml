@@ -8,10 +8,10 @@ on:
         value: ${{ jobs.gitversion.outputs.version }}
 
 jobs:
+
   gitversion:
     name: 'Determine Version'
     runs-on: ubuntu-latest
-    
     outputs:
       version: ${{ steps.set_tag.outputs.tag }}
       
@@ -58,9 +58,12 @@ jobs:
           echo "::set-output name=tag::${TAG}"
 
         
+#      - name: Save version to file
+#        run: echo "${{ steps.set_tag.outputs.tag }}" > /tmp/version.txt
+        
       - name: Save version to file
-        run: echo "${{ steps.set_tag.outputs.tag }}" > /tmp/version.txt
-
+        run: echo "$TAG" > /tmp/version.txt
+        
       - name: Upload version artifact
         uses: actions/upload-artifact@v4.3.1
         with:
