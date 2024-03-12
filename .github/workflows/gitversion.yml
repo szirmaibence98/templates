@@ -35,7 +35,7 @@ jobs:
           configFilePath: 'GitVersion.yml'
 
 
-      - name: Set Docker tag with Branch Name
+      - name: Set Version
         id: set_tag
         run: |
           # Read the version from GitVersion output
@@ -55,7 +55,7 @@ jobs:
           fi
           
           echo "Tag: $TAG"
-          echo "::set-output name=tag::${TAG}"
+          echo "TAG=${TAG}" >> $GITHUB_ENV
 
         
 #      - name: Save version to file
