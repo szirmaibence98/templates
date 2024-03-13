@@ -76,23 +76,23 @@ jobs:
 #          CHART_NAME=$(ls .deploy/*.tgz)
 #          echo "CHART_NAME=$(basename $CHART_NAME)" >> $GITHUB_ENV
           
-      - name: Set CHART_NAME and chartVersion
+      - name: Set CHART_NAME and CHART_VERSION
         run: |
-          CHART_NAME=$(ls .deploy/*.tgz)
-          echo "CHART_NAME=$(basename $CHART_NAME)" >> $GITHUB_ENV
-          # Assuming the chart version is determined earlier in the workflow and stored in a file or another variable
-          CHART_VERSION=$(cat /tmp/version.txt)  # Example: dynamically getting the version
+          CHART_PATH=$(ls .deploy/*.tgz)
+          CHART_NAME=$(basename $CHART_PATH .tgz | sed -E 's/-[0-9]+\.[0-9]+\.[0-9]+$//')
+          echo "CHART_NAME=$CHART_NAME" >> $GITHUB_ENV
+          CHART_VERSION=$(basename $CHART_PATH .tgz | grep -oE '[0-9]+\.[0-9]+\.[0-9]+$')
           echo "CHART_VERSION=$CHART_VERSION" >> $GITHUB_ENV
 
       - name: Package Helm chart
         run: |
           helm package ${{ inputs.chart_path }} -d .deploy --version ${{ env.CHART_VERSION }} --app-version ${{ env.CHART_VERSION }}
-          # You might adjust the above line if the version is set differently
 
       - name: Push Helm chart to ACR
         run: |
           echo "Using chart version: ${{ env.CHART_VERSION }}"
           helm push .deploy/${{ env.CHART_NAME }}-${{ env.CHART_VERSION }}.tgz oci://szirmaibence98.azurecr.io/${{ env.CHART_NAME }}
+
 
 
 
