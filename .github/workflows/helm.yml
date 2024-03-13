@@ -76,15 +76,17 @@ jobs:
           CHART_NAME=$(ls .deploy/*.tgz)
           echo "CHART_NAME=$(basename $CHART_NAME)" >> $GITHUB_ENV
           
+
+
       - name: Push Helm chart to ACR
         run: |
           # Assuming CHART_NAME is like 'base-0.1.10.tgz'
-          # Extract the base name (e.g., 'base') without the version or extension
+          # Extract the chart name (e.g., 'base') without the version or extension
           NAME=$(echo "${{ env.CHART_NAME }}" | sed -E 's/-[0-9]+\.[0-9]+\.[0-9]+\.tgz$//' )
           # Extract the version (e.g., '0.1.10')
           VERSION=$(echo "${{ env.CHART_NAME }}" | sed -E 's/.*-([0-9]+\.[0-9]+\.[0-9]+)\.tgz$/\1/')
 
-          # Construct the chart reference for the OCI registry, following the desired format
+          # Construct the chart reference for the OCI registry, following your successful example
           CHART_REF="${{ inputs.repository }}/$NAME/$NAME:$VERSION"
 
           echo "Using chart version: $VERSION"
@@ -92,7 +94,6 @@ jobs:
           
           # Push the chart using the constructed reference
           helm push .deploy/${{ env.CHART_NAME }} oci://$CHART_REF
-
 
 
 
