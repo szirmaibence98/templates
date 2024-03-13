@@ -69,31 +69,28 @@ jobs:
         run: helm package ${{ inputs.chart_path }} -d .deploy --version ${{ env.chartVersion }} --app-version ${{ env.appVersion }}
 
 
+#      - name: Package Helm chart
+#        run: |
+#          helm package ${{ inputs.chart_path }} -d .deploy --version ${{ env.chartVersion }} --app-version ${{ env.appVersion }}
+#          # Find the packaged chart and set its name as an environment variable
+#          CHART_NAME=$(ls .deploy/*.tgz)
+#          echo "CHART_NAME=$(basename $CHART_NAME)" >> $GITHUB_ENV
+          
+
       - name: Package Helm chart
         run: |
           helm package ${{ inputs.chart_path }} -d .deploy --version ${{ env.chartVersion }} --app-version ${{ env.appVersion }}
-          # Find the packaged chart and set its name as an environment variable
-          CHART_NAME=$(ls .deploy/*.tgz)
-          echo "CHART_NAME=$(basename $CHART_NAME)" >> $GITHUB_ENV
-          
-
+          # Extract chart name and version for dynamic handling
+          CHART_NAME=$(echo "${{ env.CHART_NAME }}" | sed -E 's/-(.*)\.tgz/\1/' | cut -d '-' -f 1)
+          CHART_VERSION=$(echo "${{ env.CHART_NAME }}" | sed -E 's/.*-(.*)\.tgz/\1/')
+          echo "CHART_NAME=$CHART_NAME" >> $GITHUB_ENV
+          echo "CHART_VERSION=$CHART_VERSION" >> $GITHUB_ENV
 
       - name: Push Helm chart to ACR
         run: |
-          # Assuming CHART_NAME is like 'base-0.1.10.tgz'
-          # Extract the chart name (e.g., 'base') without the version or extension
-          NAME=$(echo "${{ env.CHART_NAME }}" | sed -E 's/-[0-9]+\.[0-9]+\.[0-9]+\.tgz$//' )
-          # Extract the version (e.g., '0.1.10')
-          VERSION=$(echo "${{ env.CHART_NAME }}" | sed -E 's/.*-([0-9]+\.[0-9]+\.[0-9]+)\.tgz$/\1/')
+          echo "Using chart version: ${{ env.CHART_VERSION }}"
+          helm push .deploy/${{ env.CHART_NAME }}-${{ env.CHART_VERSION }}.tgz oci://szirmaibence98.azurecr.io/${{ env.CHART_NAME }}
 
-          # Construct the chart reference for the OCI registry, following your successful example
-          CHART_REF="${{ inputs.repository }}/$NAME/$NAME:$VERSION"
-
-          echo "Using chart version: $VERSION"
-          echo "Chart reference: $CHART_REF"
-          
-          # Push the chart using the constructed reference
-          helm push .deploy/${{ env.CHART_NAME }} oci://$CHART_REF
 
 
 
