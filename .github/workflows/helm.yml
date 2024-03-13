@@ -78,7 +78,8 @@ jobs:
           
       - name: Set CHART_NAME and chartVersion
         run: |
-          echo "CHART_NAME=mychart" >> $GITHUB_ENV
+          CHART_NAME=$(ls .deploy/*.tgz)
+          echo "CHART_NAME=$(basename $CHART_NAME)" >> $GITHUB_ENV
           # Assuming the chart version is determined earlier in the workflow and stored in a file or another variable
           CHART_VERSION=$(cat /tmp/version.txt)  # Example: dynamically getting the version
           echo "CHART_VERSION=$CHART_VERSION" >> $GITHUB_ENV
