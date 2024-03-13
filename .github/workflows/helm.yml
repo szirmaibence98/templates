@@ -79,10 +79,10 @@ jobs:
       - name: Push Helm chart to ACR
         run: |
           # Assuming CHART_NAME is like 'base-0.1.10.tgz'
-          # Extract just 'base' as NAME and '0.1.10' as VERSION
-          CHART_NAME="${{ env.CHART_NAME }}"
-          NAME=$(echo "$CHART_NAME" | sed -E 's/-(.*).tgz/\1/' | cut -d '-' -f 1)
-          VERSION=$(echo "$CHART_NAME" | sed -E 's/-(.*).tgz/\1/' | cut -d '-' -f 2)
+          # Extract the chart name without the version and extension (e.g., 'base')
+          NAME=$(echo "${{ env.CHART_NAME }}" | sed -E 's/-(.*)\.tgz/\1/' | cut -d '-' -f 1)
+          # Extract the version (e.g., '0.1.10')
+          VERSION=$(echo "${{ env.CHART_NAME }}" | sed -E 's/[^-]*-([^.]+).*/\1/')
 
           # Construct the chart reference for the OCI registry
           CHART_REF="${{ inputs.repository }}/$NAME:$VERSION"
@@ -91,6 +91,7 @@ jobs:
           echo "Chart reference: $CHART_REF"
           
           # Push the chart using the constructed reference
-          helm push .deploy/$CHART_NAME oci://$CHART_REF
+          helm push .deploy/${{ env.CHART_NAME }} oci://$CHART_REF
+
 
 
