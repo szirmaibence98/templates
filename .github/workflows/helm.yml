@@ -16,7 +16,7 @@ on:
 
 jobs:
   package-and-push:
-    if: ${{ github.event.inputs.release == 'false' || !startsWith(github.ref, 'refs/tags/') }}
+    if: ${{ github.ref == 'refs/heads/main' || (startsWith(github.ref, 'refs/heads/feature/') && github.event.inputs.feature == 'true') || startsWith(github.ref, 'refs/heads/hotfix/') }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
