@@ -10,7 +10,6 @@ on:
         required: true
         type: boolean
 
-
 jobs:
   deploy:
     if: ${{ inputs.deploy_condition }}
@@ -18,7 +17,6 @@ jobs:
     environment: 
       name: ${{ inputs.environment }}
     steps:
-
       - name: Checkout code
         uses: actions/checkout@v4.1.1
       
@@ -28,27 +26,16 @@ jobs:
           name: version
           path: /tmp
       
-      - name: Read version from file
-        id: read_version
-        run: echo "VERSION=$(cat /tmp/version.txt)" >> $GITHUB_ENV
-        
       - name: Simulate Deployment
         run: echo "Deploying to ${{ inputs.environment }} Environment"
 
-
-      - name: Create and push tag if prod and main branch
+      - name: Setup Git and create tag if prod and main branch
         if: ${{ inputs.environment == 'prod' && github.ref == 'refs/heads/main' }}
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          echo "VERSION=$(cat /tmp/version.txt)" >> $GITHUB_ENV
-          VERSION=${{ env.VERSION }}
+          VERSION=$(cat /tmp/version.txt)
           git tag $VERSION
           git push origin $VERSION
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        uses: actions/checkout@v4.1.1
-        with:
-          path: /tmp
-
-
