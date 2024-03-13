@@ -11,6 +11,11 @@ on:
       repository:
         required: true
         type: string
+      chart_path:  
+        description: 'Path to the Helm chart'
+        required: false
+        type: string
+        default: 'charts/'    
     secrets:
       ACR_USERNAME:
         required: true
@@ -61,7 +66,7 @@ jobs:
         run: echo "${{ secrets.ACR_PASSWORD }}" | helm registry login ${{ inputs.repository }} --username ${{ secrets.ACR_USERNAME }} --password-stdin
         
       - name: Package Helm chart
-        run: helm package charts/mychart -d .deploy --version ${{ env.chartVersion }} --app-version ${{ env.appVersion }}
+        run: helm package ${{ inputs.chart_path }} -d .deploy --version ${{ env.chartVersion }} --app-version ${{ env.appVersion }}
 
 
   
