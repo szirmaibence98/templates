@@ -69,9 +69,15 @@ jobs:
         run: helm package ${{ inputs.chart_path }} -d .deploy --version ${{ env.chartVersion }} --app-version ${{ env.appVersion }}
 
 
-  
+      - name: Package Helm chart
+        run: |
+          helm package ${{ inputs.chart_path }} -d .deploy --version ${{ env.chartVersion }} --app-version ${{ env.appVersion }}
+          # Find the packaged chart and set its name as an environment variable
+          CHART_NAME=$(ls .deploy/*.tgz)
+          echo "CHART_NAME=$(basename $CHART_NAME)" >> $GITHUB_ENV
+
       - name: Push Helm chart to ACR
         run: |
-          CHART_VERSION=${{ env.chartVersion }}
-          echo "Using chart version: $CHART_VERSION"
-          helm push .deploy/mychart-${CHART_VERSION}.tgz oci://szirmaibence98.azurecr.io/mychart
+          echo "Using chart version: ${{ env.chartVersion }}"
+          helm push .deploy/${{ env.CHART_NAME }} oci://${{ inputs.repository }}/${{ env.CHART_NAME }}
+
