@@ -75,9 +75,22 @@ jobs:
           # Find the packaged chart and set its name as an environment variable
           CHART_NAME=$(ls .deploy/*.tgz)
           echo "CHART_NAME=$(basename $CHART_NAME)" >> $GITHUB_ENV
-
+          
       - name: Push Helm chart to ACR
         run: |
-          echo "Using chart version: ${{ env.chartVersion }}"
-          helm push .deploy/${{ env.CHART_NAME }} oci://${{ inputs.repository }}/${{ env.CHART_NAME }}
+          # Assuming CHART_NAME is like 'base-0.1.10.tgz'
+          # Extract just 'base' as NAME and '0.1.10' as VERSION
+          CHART_NAME="${{ env.CHART_NAME }}"
+          NAME=$(echo "$CHART_NAME" | sed -E 's/-(.*).tgz/\1/' | cut -d '-' -f 1)
+          VERSION=$(echo "$CHART_NAME" | sed -E 's/-(.*).tgz/\1/' | cut -d '-' -f 2)
+
+          # Construct the chart reference for the OCI registry
+          CHART_REF="${{ inputs.repository }}/$NAME:$VERSION"
+
+          echo "Using chart version: $VERSION"
+          echo "Chart reference: $CHART_REF"
+          
+          # Push the chart using the constructed reference
+          helm push .deploy/$CHART_NAME oci://$CHART_REF
+
 
