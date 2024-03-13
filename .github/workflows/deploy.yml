@@ -1,0 +1,22 @@
+name: Deployment Workflow
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+      deploy_condition:
+        required: true
+        type: boolean
+
+
+jobs:
+  deploy:
+    if: ${{ inputs.deploy_condition }}
+    runs-on: ubuntu-latest
+    environment: 
+      name: ${{ inputs.environment }}
+    steps:
+      - name: Simulate Deployment
+        run: echo "Deploying to ${{ inputs.environment }} Environment"
