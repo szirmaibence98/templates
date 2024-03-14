@@ -74,7 +74,7 @@ jobs:
 
       - name: Set CHART_NAME and CHART_VERSION
         run: |
-          CHART_PATH=$(ls charts/*.tgz)
+          CHART_PATH=$(ls /home/runner/work/dotnet/dotnet/dotnet-1.3.50.tgz)
           CHART_NAME=$(basename $CHART_PATH .tgz | sed -E 's/-[0-9]+\.[0-9]+\.[0-9]+$//')
           echo "CHART_NAME=$CHART_NAME" >> $GITHUB_ENV
           CHART_VERSION=$(basename $CHART_PATH .tgz | grep -oE '[0-9]+\.[0-9]+\.[0-9]+$')
