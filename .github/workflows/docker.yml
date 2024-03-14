@@ -4,9 +4,7 @@ on:
   workflow_call:
     inputs:
       image-names:
-        required: true
-        type: string
-      docker-contexts:
+        description: 'JSON array of image names, contexts, and Dockerfile paths'
         required: true
         type: string
       release:
@@ -18,6 +16,8 @@ on:
         required: true
       DOCKER_PASSWORD:
         required: true
+
+
 
 jobs:
   docker:
@@ -42,6 +42,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: ${{ matrix.docker-context }}
-          file: ${{ matrix.docker-file }} # Assuming you want to specify Dockerfiles as well
+          file: ${{ matrix.docker-file }} # Use the specified Dockerfile
           push: true
           tags: ${{ matrix.image-name }}
+
