@@ -96,4 +96,4 @@ jobs:
       - name: Push Helm chart to ACR
         run: |
           echo "Using chart version: ${{ env.CHART_VERSION }}"
-          helm push .deploy/${{ env.CHART_NAME }}-${{ env.CHART_VERSION }}.tgz oci://${{ inputs.repository }}/helm
+          helm push /home/runner/work/dotnet/dotnet/${{ env.CHART_NAME }}-${{ env.CHART_VERSION }}.tgz oci://${{ inputs.repository }}/helm
