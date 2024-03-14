@@ -29,6 +29,29 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
+
+
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4.1.4
+        with:
+          path: ./publish
+
+      - name: Set Docker Tag
+        run: |
+          GITVERSION=$(cat /publish/version.txt)
+          # Always set appVersion to the GitVersion
+          echo "DOCKER_TAG=$GITVERSION" >> $GITHUB_ENV
+          
+          # Check if the GitHub Action was triggered by a tag
+          if [[ "${{ github.ref }}" == refs/tags/* ]]; then
+            # Extract the tag name by removing the 'refs/tags/' prefix
+            TAG_NAME=${GITHUB_REF#refs/tags/}
+            echo "DOCKER_TAG=$TAG_NAME" >> $GITHUB_ENV
+          else
+            # Use a default version for non-tagged commits
+            echo "chartVersion=0.0.1" >> $GITHUB_ENV
+          fi
+          
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
@@ -39,10 +62,10 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build and push
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v5.1.0
         with:
           context: ${{ matrix.docker-context }}
-          file: ${{ matrix.docker-file }} # Use the specified Dockerfile
+          file: ${{ matrix.docker-file }}
           push: true
-          tags: ${{ matrix.image-name }}
+          tags: ${{ matrix.image-name }}:${{ env.DOCKER_TAG }}
 
