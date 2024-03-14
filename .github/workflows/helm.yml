@@ -69,6 +69,7 @@ jobs:
         run: |
           pwd
           ls -la
+          ls chart/
           helm dependency update
           helm package ${{ inputs.chart_path }} -d .deploy --version ${{ env.chartVersion }} --app-version ${{ env.appVersion }}
 
