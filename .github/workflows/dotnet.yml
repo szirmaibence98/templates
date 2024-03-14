@@ -53,13 +53,12 @@ jobs:
         PUBLISH_PATH="${{ github.workspace }}/publish/${ARTIFACT_NAME}"
         
         echo "Prepared artifact name: $ARTIFACT_NAME"
-        echo "::set-output name=artifact_name::$ARTIFACT_NAME"
-        
-        echo "Publish path: $PUBLISH_PATH"
-        echo "::set-output name=publish_path::$PUBLISH_PATH"
+        echo "ARTIFACT_NAME=${ARTIFACT_NAME}" >> $GITHUB_ENV
+        echo "PUBLISH_PATH=${PUBLISH_PATH}" >> $GITHUB_ENV
         
         # Ensure the publish path directory exists
-        mkdir -p $PUBLISH_PATH
+        mkdir -p "$PUBLISH_PATH"
+
 
 
     - name: Publish
