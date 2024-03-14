@@ -64,7 +64,7 @@ jobs:
         
       - name: Package Helm chart
         run: |
-          helm package -u --version ${{ env.chartVersion }} --app-version ${{ env.appVersion }} ${{ inputs.chart_path }}
+          helm package -u -d .deploy --version ${{ env.chartVersion }} --app-version ${{ env.appVersion }} ${{ inputs.chart_path }}
           ls -la
           pwd
            
@@ -74,7 +74,7 @@ jobs:
 
       - name: Set CHART_NAME and CHART_VERSION
         run: |
-          CHART_PATH=$(ls /home/runner/work/dotnet/dotnet/dotnet-1.3.50.tgz)
+          CHART_PATH=$(ls  ${{ inputs.chart_path }}*.tgz)
           CHART_NAME=$(basename $CHART_PATH .tgz | sed -E 's/-[0-9]+\.[0-9]+\.[0-9]+$//')
           echo "CHART_NAME=$CHART_NAME" >> $GITHUB_ENV
           CHART_VERSION=$(basename $CHART_PATH .tgz | grep -oE '[0-9]+\.[0-9]+\.[0-9]+$')
