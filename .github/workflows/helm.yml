@@ -63,7 +63,9 @@ jobs:
         run: echo "${{ secrets.ACR_PASSWORD }}" | helm registry login ${{ inputs.repository }} --username ${{ secrets.ACR_USERNAME }} --password-stdin
         
       - name: Package Helm chart
-        run: helm package ${{ inputs.chart_path }} -d .deploy --version ${{ env.chartVersion }} --app-version ${{ env.appVersion }}
+        run: |
+          helm package -u --version ${{ env.chartVersion }} --app-version ${{ env.appVersion }} ${{ inputs.chart_path }}
+#          helm package ${{ inputs.chart_path }} -d .deploy --version ${{ env.chartVersion }} --app-version ${{ env.appVersion }}
           
       - name: Set CHART_NAME and CHART_VERSION
         run: |
