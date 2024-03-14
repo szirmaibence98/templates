@@ -13,8 +13,7 @@ on:
         required: false
         type: boolean
         default: false
-    secrets:
-      pass:
+
 
 jobs:
   dotnet:
@@ -41,11 +40,21 @@ jobs:
     - name: Test
       run: dotnet test ${{ matrix.project-path }} --no-build -c Release --verbosity normal
 
+    - name: Prepare Artifact Name and Path
+      id: prep
+      run: |
+        ARTIFACT_NAME=$(echo "${{ matrix.project-path }}" | sed 's/[/\.]/_/g' | sed 's/csproj$//')
+        echo "Prepared artifact name: $ARTIFACT_NAME"
+        echo "::set-output name=artifact_name::$ARTIFACT_NAME"
+        PUBLISH_PATH="../publish/$ARTIFACT_NAME"
+        mkdir -p $PUBLISH_PATH
+        echo "::set-output name=publish_path::$PUBLISH_PATH"
+
     - name: Publish
-      run: dotnet publish ${{ matrix.project-path }} -c Release -o ../publish/${{ matrix.project-path | replace('/','_') | replace('.csproj','') }}
+      run: dotnet publish ${{ matrix.project-path }} -c Release -o ${{ steps.prep.outputs.publish_path }}
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4.3.1
       with:
-        name: published-app-${{ matrix.project-path | replace('/','_') | replace('.csproj','') }}
-        path: ./publish/${{ matrix.project-path | replace('/','_') | replace('.csproj','') }}
+        name: ${{ steps.prep.outputs.artifact_name }}
+        path: ${{ steps.prep.outputs.publish_path }}
