@@ -43,12 +43,24 @@ jobs:
     - name: Prepare Artifact Name and Path
       id: prep
       run: |
-        ARTIFACT_NAME=$(echo "${{ matrix.project-path }}" | sed 's/[/\.]/_/g' | sed 's/csproj$//')
+        # Extracts the base name of the .csproj file, e.g., "dotnet" from "src/app1/dotnet.csproj"
+        BASE_NAME=$(basename ${{ matrix.project-path }} .csproj)
+        
+        # Replaces any characters not allowed in artifact names or paths as needed
+        ARTIFACT_NAME=${BASE_NAME//[^a-zA-Z0-9_]/_}
+        
+        # Construct the publish path using the artifact name
+        PUBLISH_PATH="${{ github.workspace }}/publish/${ARTIFACT_NAME}"
+        
         echo "Prepared artifact name: $ARTIFACT_NAME"
         echo "::set-output name=artifact_name::$ARTIFACT_NAME"
-        PUBLISH_PATH="../publish/$ARTIFACT_NAME"
-        mkdir -p $PUBLISH_PATH
+        
+        echo "Publish path: $PUBLISH_PATH"
         echo "::set-output name=publish_path::$PUBLISH_PATH"
+        
+        # Ensure the publish path directory exists
+        mkdir -p $PUBLISH_PATH
+
 
     - name: Publish
       run: dotnet publish ${{ matrix.project-path }} -c Release -o ${{ steps.prep.outputs.publish_path }}
@@ -58,3 +70,17 @@ jobs:
       with:
         name: ${{ steps.prep.outputs.artifact_name }}
         path: ${{ steps.prep.outputs.publish_path }}
+
+
+
+
+    - name: Publish
+      run: dotnet publish -c Release -o ../publish
+      working-directory: ${{ inputs.working-directory }}
+
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v4.3.1
+      with:
+        name: published-app
+        path: ./publish
+  
