@@ -64,8 +64,10 @@ jobs:
         
       - name: Package Helm chart
         run: |
-          helm package -u --version ${{ env.chartVersion }} --app-version ${{ env.appVersion }} ${{ inputs.chart_path }}
-#          helm package ${{ inputs.chart_path }} -d .deploy --version ${{ env.chartVersion }} --app-version ${{ env.appVersion }}
+#          helm package -u --version ${{ env.chartVersion }} --app-version ${{ env.appVersion }} ${{ inputs.chart_path }}
+          helm package ${{ inputs.chart_path }} -d .deploy --version ${{ env.chartVersion }} --app-version ${{ env.appVersion }}
+
+
           
       - name: Set CHART_NAME and CHART_VERSION
         run: |
@@ -75,9 +77,9 @@ jobs:
           CHART_VERSION=$(basename $CHART_PATH .tgz | grep -oE '[0-9]+\.[0-9]+\.[0-9]+$')
           echo "CHART_VERSION=$CHART_VERSION" >> $GITHUB_ENV
 
-      - name: Package Helm chart
-        run: |
-          helm package ${{ inputs.chart_path }} -d .deploy --version ${{ env.CHART_VERSION }} --app-version ${{ env.CHART_VERSION }}
+#      - name: Package Helm chart
+#        run: |
+#          helm package ${{ inputs.chart_path }} -d .deploy --version ${{ env.CHART_VERSION }} --app-version ${{ env.CHART_VERSION }}
 
       - name: Push Helm chart to ACR
         run: |
