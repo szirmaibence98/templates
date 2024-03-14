@@ -1,6 +1,5 @@
 name: Package and Push Helm Chart to ACR
 
-
 on:
   workflow_call:
     inputs:
@@ -54,8 +53,6 @@ jobs:
           fi
         env:
           GITHUB_REF: ${{ github.ref }}
-
-
           
       - name: Helm tool installer
         uses: Azure/setup-helm@v4
@@ -67,14 +64,6 @@ jobs:
         
       - name: Package Helm chart
         run: helm package ${{ inputs.chart_path }} -d .deploy --version ${{ env.chartVersion }} --app-version ${{ env.appVersion }}
-
-
-#      - name: Package Helm chart
-#        run: |
-#          helm package ${{ inputs.chart_path }} -d .deploy --version ${{ env.chartVersion }} --app-version ${{ env.appVersion }}
-#          # Find the packaged chart and set its name as an environment variable
-#          CHART_NAME=$(ls .deploy/*.tgz)
-#          echo "CHART_NAME=$(basename $CHART_NAME)" >> $GITHUB_ENV
           
       - name: Set CHART_NAME and CHART_VERSION
         run: |
