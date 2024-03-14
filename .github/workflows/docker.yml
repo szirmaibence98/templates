@@ -38,7 +38,7 @@ jobs:
 
       - name: Set Docker Tag
         run: |
-          GITVERSION=$(cat /publish/version/version.txt)
+          GITVERSION=$(cat ./publish/version/version.txt)
           # Always set appVersion to the GitVersion
           echo "DOCKER_TAG=$GITVERSION" >> $GITHUB_ENV
           
