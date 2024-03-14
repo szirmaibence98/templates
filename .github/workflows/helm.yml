@@ -15,7 +15,7 @@ on:
         description: 'Path to the Helm chart'
         required: false
         type: string
-        default: 'chart/'    
+        default: 'charts/'    
     secrets:
       ACR_USERNAME:
         required: true
