@@ -64,11 +64,10 @@ jobs:
         
       - name: Package Helm chart
         run: |
-          helm package ${{ inputs.chart_path }} -d .deploy --version ${{ env.chartVersion }} --app-version ${{ env.appVersion }}
+          helm package -u --version ${{ env.chartVersion }} --app-version ${{ env.appVersion }} ${{ inputs.chart_path }}
 
-          
-#          helm package -u --version ${{ env.chartVersion }} --app-version ${{ env.appVersion }} ${{ inputs.chart_path }}
-          
+           
+#          helm package ${{ inputs.chart_path }} -d .deploy --version ${{ env.chartVersion }} --app-version ${{ env.appVersion }}         
 
 
           
