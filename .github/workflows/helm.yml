@@ -71,15 +71,6 @@ jobs:
 #          helm package ${{ inputs.chart_path }} -d .deploy --version ${{ env.chartVersion }} --app-version ${{ env.appVersion }}         
 
 
-
-      - name: Set CHART_NAME and CHART_VERSION
-        run: |
-          CHART_PATH=$(ls  ${{ inputs.chart_path }}*.tgz)
-          CHART_NAME=$(basename $CHART_PATH .tgz | sed -E 's/-[0-9]+\.[0-9]+\.[0-9]+$//')
-          echo "CHART_NAME=$CHART_NAME" >> $GITHUB_ENV
-          CHART_VERSION=$(basename $CHART_PATH .tgz | grep -oE '[0-9]+\.[0-9]+\.[0-9]+$')
-          echo "CHART_VERSION=$CHART_VERSION" >> $GITHUB_ENV
-
                 
 #      - name: Set CHART_NAME and CHART_VERSION
 #        run: |
@@ -93,7 +84,17 @@ jobs:
 #        run: |
 #          helm package ${{ inputs.chart_path }} -d .deploy --version ${{ env.CHART_VERSION }} --app-version ${{ env.CHART_VERSION }}
 
+
+      - name: Set CHART_NAME and CHART_VERSION
+        run: |
+          CHART_PATH=$(ls .deploy/*.tgz)
+          CHART_NAME=$(basename $CHART_PATH .tgz | sed -E 's/-[0-9]+\.[0-9]+\.[0-9]+$//')
+          echo "CHART_NAME=$CHART_NAME" >> $GITHUB_ENV
+          CHART_VERSION=$(basename $CHART_PATH .tgz | grep -oE '[0-9]+\.[0-9]+\.[0-9]+$')
+          echo "CHART_VERSION=$CHART_VERSION" >> $GITHUB_ENV
+
+
       - name: Push Helm chart to ACR
         run: |
           echo "Using chart version: ${{ env.CHART_VERSION }}"
-          helm push /home/runner/work/dotnet/dotnet/${{ env.CHART_NAME }}-${{ env.CHART_VERSION }}.tgz oci://${{ inputs.repository }}/helm
+          helm push .deploy/${{ env.CHART_NAME }}-${{ env.CHART_VERSION }}.tgz oci://${{ inputs.repository }}/helm
