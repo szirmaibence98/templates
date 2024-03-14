@@ -67,6 +67,8 @@ jobs:
         
       - name: Package Helm chart
         run: |
+          pwd
+          ls -la
           helm dependency update
           helm package ${{ inputs.chart_path }} -d .deploy --version ${{ env.chartVersion }} --app-version ${{ env.appVersion }}
 
